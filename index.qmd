@@ -1,0 +1,14 @@
+# Preface {.unnumbered}
+
+This is supported by Quarto book.
+
+To learn more about Quarto books visit <https://quarto.org/docs/books>.
+
+本教程的代码和演示基于R，并不需要编程基础。
+
+本教程注重项目实践和知识理解，弱化编程和数学。
+
+:::{.callout-note}
+因为我不是计算机专业，数学也确实学的不太好。
+:::
+

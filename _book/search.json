@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "01-hello_data.html",
+    "href": "01-hello_data.html",
+    "title": "1  Hello Data",
+    "section": "",
+    "text": "这部分我们首先要了解的是数据类型和整洁数据（tidy data）。"
+  },
+  {
+    "objectID": "01-hello_data.html#什么是数据",
+    "href": "01-hello_data.html#什么是数据",
+    "title": "1  Hello Data",
+    "section": "1.1 什么是数据",
+    "text": "1.1 什么是数据\n我的理解，凡是能够储存在存储介质里的都是数据。不同的计算机从业者，看待数据的角度是不同的。如数据修复，更看重数据的底层，必须知道数据如何存储，如何在winhex那一串的数字中寻找答案；操作系统，更关心的是数据存储分配，存储共享，存储保护，存储扩张等。\n在这个教程（书）中，我们关心的是具备一定规范、规律，且具备分析价值的数据。我们要学会导入、清洗、分析、利用好这样的数据，这也就是所谓的”数据科学（data science）“。"
+  },
+  {
+    "objectID": "01-hello_data.html#数据的类型",
+    "href": "01-hello_data.html#数据的类型",
+    "title": "1  Hello Data",
+    "section": "1.2 数据的类型",
+    "text": "1.2 数据的类型\n数据科学家（暂且用这么高端的名字吧）认为具备分析价值的数据是什么样的呢？我想到了以下数据类型，当然有些数据是原始状态，在正式进入分析以前，是需要先做预处理的（Pre-processing）。下面我列举一些常见的数据类型。\n\n1.2.1 文本数据\n在这里，我把文本形式存储的数据全部叫文本数据。这些数据，有些是按照事先约定好的形式和格式采集和录入而形成的表格型数据（像excel），也有普通的一本书、一篇文章这样的纯粹文字数据。其中，表格型数据（dataframe）是我们使用最多，最需要掌握的数据类型。\n\n\n\n\n\n\nNote\n\n\n\n这里我是这样讲文本数据的定义，其他专家可能有不同归类或理解\n\n\n\n数据框（dataframe）\n\ndataframe 顾名思义，也叫方形数据（Rectangular Data）。Python（pandas包）和R都将这种数据称为dataframe，也是最常见的数据对象。在R中，还有tibble和data.table这类dataframe的变种，本质上还是方形数据，只不过用来处理的包和风格不太相同。\n这就是一个\n\n\n\n\n\n\nTip\n\n\n\n我们后面还会详细讲解Rectangular Data，尤其是tidy data作为一种规范的dataframe，请稍安勿躁。\n\n\n\n纯粹文本Plain text\n\n纯文本，因为它纯了，就是普通不加任何清洗和修改的自然文字段落。\n\n\n\n\n\nid\nacceptyear\nage\nsurvived\nsurvtime\nprior\ntransplant\nwait\n\n\n\n\n15\n68\n53\ndead\n1\nno\ncontrol\nNA\n\n\n43\n70\n43\ndead\n2\nno\ncontrol\nNA\n\n\n61\n71\n52\ndead\n2\nno\ncontrol\nNA\n\n\n75\n72\n52\ndead\n2\nno\ncontrol\nNA\n\n\n6\n68\n54\ndead\n3\nno\ncontrol\nNA\n\n\n42\n70\n36\ndead\n3\nno\ncontrol\nNA\n\n\n\n\n\n\n\n1.2.2 其他数据\n\n时间序列Time series data\n空间数据Spatial data\n图神经网络Graph (or network) data\n图像和视频数据image data and video data"
+  },
+  {
+    "objectID": "summary.html",
+    "href": "summary.html",
+    "title": "2  Summary",
+    "section": "",
+    "text": "[1] 2"
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "R语言医学数据科学入门",
+    "section": "",
+    "text": "This is Quarto book.\nTo learn more about Quarto books visit https://quarto.org/docs/books."
+  }
+]

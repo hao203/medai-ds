@@ -1,0 +1,35 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "R语言医学数据科学入门"
+  author: "梁doc"
+  date: "7/24/2022"
+  sharing: [twitter, facebook]
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - part: "Data things"
+      chapters:
+        - 01-hello_data.qmd
+        - 02-Data types.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+
+format:
+  html:
+    theme: default
+  pdf:
+    documentclass: scrreprt
+    include-in-header: 
+      text: |
+        \usepackage{ctex}
+execute:
+  echo: false
+  warning: false
+editor: source
+

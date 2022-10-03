@@ -1,0 +1,64 @@
+# Hello Data
+
+
+```{r}
+pacman::p_load(magrittr,rio)
+```
+
+这部分我们首先要了解的是数据类型和整洁数据（tidy data）。
+
+## 什么是数据
+
+我的理解，凡是能够储存在存储介质里的都是数据。不同的计算机从业者，看待数据的角度是不同的。如数据修复，更看重数据的底层，必须知道数据如何存储，如何在winhex那一串的数字中寻找答案；操作系统，更关心的是数据存储分配，存储共享，存储保护，存储扩张等。
+
+在这个教程（书）中，我们关心的是具备一定**规范、规律**，且具备**分析价值**的数据。我们要学会导入、清洗、分析、利用好这样的数据，这也就是所谓的"数据科学（data science）"。
+
+## 数据的类型
+
+数据科学家（暂且用这么高端的名字吧）认为具备分析价值的数据是什么样的呢？我想到了以下数据类型，当然有些数据是原始状态，在正式进入分析以前，是需要先做预处理的（Pre-processing）。下面我列举一些常见的数据类型。
+
+### 文本数据
+
+在这里，我把文本形式存储的数据全部叫文本数据。这些数据，有些是按照事先约定好的形式和格式采集和录入而形成的表格型数据（像excel），也有普通的一本书、一篇文章这样的纯粹文字数据。其中，表格型数据（dataframe）是我们使用最多，最需要掌握的数据类型。
+
+:::{.callout-note}
+这里我是这样讲文本数据的定义，其他专家可能有不同归类或理解
+:::
+
+1. 数据框（dataframe）
+
+`dataframe` 顾名思义，也叫方形数据（Rectangular Data）。Python（pandas包）和R都将这种数据称为dataframe，也是最常见的数据对象。在R中，还有`tibble`和`data.table`这类`dataframe`的变种，本质上还是方形数据，只不过用来处理的包和风格不太相同。
+
+这就是一个`dataframe`例子
+
+```{r}
+head(esoph) %>% 
+  knitr::kable()
+
+```
+
+:::{.callout-tip}
+我们后面还会详细讲解Rectangular Data，尤其是tidy data作为一种规范的dataframe，请稍安勿躁。
+:::
+
+2. 纯粹文本Plain text
+
+纯文本，因为它纯了，就是普通不加任何清洗和修改的自然文字段落。
+
+
+### 其他数据
+
+- 时间序列Time series data
+
+  大部分信号处理都是这类数据，比如心电图、股票、声波。
+
+- 空间数据Spatial data
+
+  地图、导航类似的数据。
+
+- 图神经网络Graph (or network) data
+
+  > In computer science and information technology, the term graph typically refers to a depiction of the connections among entities, and to the underlying data structure.在计算机科学和信息技术中，术语"图"通常指实体之间的连接和底层数据结构的描述。如图神经网络。
+
+- 图像和视频数据image data and video data
+
