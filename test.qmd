@@ -14,7 +14,7 @@ Quarto enables you to weave together content and executable code into a finished
 
 ```{r}
 #| label: tbl-test1
-#| tbl-cap: "Birth table"
+#| tbl-cap: "table 1"
 library(magrittr)
 tab1 <- esoph  
 knitr::kable(tab1) 
