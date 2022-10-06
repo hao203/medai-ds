@@ -1,0 +1,40 @@
+---
+title: "Untitled"
+format: 
+  html:
+    df-print: paged
+editor: source
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## table1
+
+```{r}
+#| label: tbl-test1
+#| tbl-cap: "Birth table"
+library(magrittr)
+tab1 <- esoph  
+knitr::kable(tab1) 
+```
+
+cross-ref @tbl-test1 
+
+paged is not work
+
+## table2
+
+```{r}
+#| label: tbl-test2
+#| tbl-cap: "table 2"
+
+tab2 <- esoph  
+tab2
+
+```
+
+cross-ref @tbl-test2
+
+cross-ref is not work
