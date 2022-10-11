@@ -1,0 +1,123 @@
+```{r}
+pacman::p_load(magrittr,rio,here)
+```
+
+# Data I/O
+
+![载入和导出数据](image/04/Import_Export.png)
+
+数据导入和导出（import and output），是分析软件必备的功能，也是第一步操作。 R的数据导入功能尤其强大，得益于几个强大的package。
+
+想一想，数据来源于哪？
+
+-   内置数据--Built in Data
+-   .csv, .txt. .xls, ....
+-   SPSS, SAS, Stata
+-   爬虫--Web Scraping
+-   数据库--Databases
+-   API
+-   ...
+
+## 内置数据
+
+R的内置数据，其实都是`rds`或\`rda\`\`为扩展名的数据文件，这类文件是R输出的，是R的原生数据文件
+
+想要调用他们也非常简单，比如R默认的内置方法`data()`，里面有很多示例数据， 你可以自己在电脑上试验一下，看看里面有哪些datasets。
+
+同样，很多R 的package里面也有自己的datasets，可以查看一下
+
+```{r}
+#| echo: true
+
+ ds1 <- data(package="cluster")   
+  ds1$results %>% 
+    as.data.frame() %>% 
+    .[,3:4]
+
+```
+
+当你加载（library）一个包时，它里面的dataset也会同时加载，想要调用某个数据集，直接输入其名字即可。
+
+```{r}
+library(cluster)
+animals
+```
+
+## 载入/读取数据
+
+![载入数据窗口](image/04/snapimport.png)
+
+表格数据的常见格式R都支持，可以在Rstudio直接操作（如图），并且不需要任何包就可以读取如csv、dcf、rds、rda R基础包，也就是没安装任何包之前，有一些基础函数，如`read.csv`，可以读取csv文件，读取完之后会将其作为一个data.frame对象。既可以读取本地，也可以读取网络链接。
+
+```{r}
+#| echo: true
+
+df1 <- read.csv("https://labfile.oss.aliyuncs.com/courses/1283/mlbootcamp5_train.csv") %>% 
+  head(10)  
+class(df1)
+
+df2 <- read.csv("dataset/Song.csv")
+df2
+```
+
+### 读取其他文件
+
+数据读取的包还有几个，包括`readr`，它属于tidyverse系列的包之一，命令与R基础包非常相似，与前面不同的是读取到的数据会被当做`tibble`对象。
+
+```{r}
+#| echo: true
+
+library(readr)
+
+df3 <- read_csv("dataset/Song.csv")
+class(df3)
+```
+
+当然，我们别忘了，读取excel的文件，采用的是`readxl`package
+
+```{r}
+library(readxl)
+exceldf <- readxl_example("datasets.xlsx") 
+quake <- read_excel(exceldf, sheet = "quakes")
+quake
+```
+
+此外，还有一个包`haven`，用来读取 SAS, SPSS, and Stata的数据文件
+这里就不再用数据做演示了，只提供示例代码
+```{r}
+#| echo: true
+#| eval: false
+library(haven)
+sas_mydf <-read_sas("mydf.sas7bdat") # SAS文件读取
+sav_mydf <-read_sav("mydf.sav") # SPSS
+dta_mydf <-read_dta("mydf.dta") # Stata
+
+```
+
+## 导出数据
+
+读取数据学会了，导出数据就非常简单，前面大家都能总结出一定规律，凡是读取数据，都是read开头，导出数据，都是write开头
+
+```{r}
+#| echo: true
+
+library(openxlsx)
+write_csv(quake, "dataset/quake.csv")
+write.xlsx(quake, "dataset/quake.xlsx")
+```
+
+## 瑞士军刀rio
+
+前面，大家一定觉得，我要导入数据，为什么记这么多命令啊，难道不能一个包，统一命令？
+
+`rio`号称是I/O的扛把子，瑞士军刀
+
+只需要记住两个命令，import和export。简单多了吧！
+```{r}
+#| echo: true
+
+library(rio)
+import("dataset/quake.xlsx")
+export(quake, "dataset/quake.rds")
+```
+

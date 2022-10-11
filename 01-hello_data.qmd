@@ -1,4 +1,4 @@
-# Hello Data
+# Hello data
 
 
 ```{r}
@@ -27,7 +27,8 @@ pacman::p_load(magrittr,rio)
 
 1. 数据框（dataframe）
 
-`dataframe` 顾名思义，也叫方形数据（Rectangular Data）。Python（pandas包）和R都将这种数据称为dataframe，也是最常见的数据对象。在R中，还有`tibble`和`data.table`这类`dataframe`的变种，本质上还是方形数据，只不过用来处理的包和风格不太相同。
+`dataframe` 顾名思义，也叫方形数据（Rectangular Data）。Python（pandas包）和R都将这种数据称为dataframe，也是最常见的数据对象。
+在R中，还有`tibble`和`data.table`这类`dataframe`的变种，本质上还是方形数据，只不过用来处理的包和风格不太相同。
 
 这就是一个`dataframe`例子
 

@@ -1,3 +1,6 @@
+```{r}
+pacman::p_load(magrittr, tibble, data.table)
+```
 # 数据结构和类型
 
 请记住，Python和R是面向对象（object）的语言，你看到的任何数据，都可以理解为是一个**对象**。
@@ -7,19 +10,147 @@
 ## 数据结构
 
 :::{.callout-tip}
-我们要从大到小来描述和理解数据。
+我们要从大到小一步一步来描述和理解数据。
 :::
 
-我们看到一个对象（变量），首先要知道它是什么（数据结构），然后再看里面装了什么（数据值）。比如，你看到一个瓶子（结构），里面装了水（值）。
+我们看到一个对象（变量），首先要知道它是什么样的容器（数据结构），然后再看里面装了什么（数据值）。比如，你看到一个瓶子（结构），里面装了水（值）。
 
-下面，我们看看R中，最基本的数据类型，向量（vector）
+### 向量
+
+下面，我们看看R中，最基本的数据类型，向量（vector）。
+
+在这段代码中，
+
+  - `a`是矩阵（结构），里面有6个数字（11-16）。
+  - `b`是列表（结构），但它也认为其实是向量（vector），里面装的内容五花八门。
+  - `A`是把通过`as.vector()`函数，将矩阵转化成了向量。
+  - `c`就是一个普通的向量
+
 
 ```{r}
 #| echo: true
-A <- matrix(11:16, nrow=3, ncol=2)
-a <- list(1,"1",cars, A)
+a <- matrix(11:16, nrow=3, ncol=2)
+b <- list(1,"dogs",cars, a)
+c <- 5
+A <- as.vector(a)
+
 is.vector(a)
+is.vector(A)
+is.vector(b)
+is.vector(c)
 
 ```
 
 
+:::{.callout-warning}
+`vector`向量，作为R最基本的数据结构，就像哆啦A梦的口袋，什么都可以装，并且任何其他数据类型都可以转化为向量。
+:::
+
+### 其他数据结构
+
+刚刚其实我们已经看到了R的三种数据结构，包括`list`、`matrix`和向量。我们可以用 `class()`函数查看一下
+
+```{r}
+#| echo: true
+class(a)
+class(b)
+```
+此外，R里面还有多维数组（`array`）,其实，刚刚看到的matrix其实也是属于二维数组（`array`）。下面我们还要重点介绍data.frame和类似数据框的对象，如前面提到的`tibble`和`data.table`
+
+### 再次理解Rectangular Data
+
+统计分析中最常见的原始数据形式是类似于数据库表或Excel数据表的形式。 这样形式的数据在R中叫做数据框(data.frame)。 数据框类似于一个矩阵，有行、列， 但各列允许有不同类型：数值型、因子、字符、日期时间等。 同一列的数据类型一般是相同的。 还是以esoph这个数据对象为例。
+
+```{r}
+head(esoph) %>% 
+  knitr::kable(caption = "data.frame 表")
+
+```
+我们查看一下它的类型
+
+```{r}
+#| echo: true
+class(esoph)
+```
+
+我们把它转化成其他的表格对象
+
+```{r}
+#| echo: true
+as_tibble(esoph) %>% #转化成tibble对象
+  class()
+```
+
+```{r}
+#| echo: true
+as.data.table(esoph) %>% #转化成data.table对象
+  class()
+```
+
+看上去，他们并没有区别，但在后面具体的操作上，会有一些差别，后面具体实践，我们再去理解。
+
+```{r}
+#| echo: true
+as.data.table(esoph) %>% #输出data.table
+  head() %>% 
+  knitr::kable(caption = "data.table 表")
+```
+
+### 数据类型
+
+接下来，我们看看数据框（盒子）里面到底装的是什么。
+
+我们刚刚看到，表格里面是一些数字、文字之类的。在R中将这些数据划分为这些类型
+
+  - Numeric (1.2, 5, 7, 3.14159)
+  - Integer (1, 2, 3, 4, 5)
+  - Complex (i + 4)
+  - Logical (TRUE / FALSE)
+  - Character ("a", "apple")
+  - Factor (以后再探讨)
+  
+我们可以看看，这个表格中每个列都是什么类型的数据。
+
+```{r}
+#| echo: true
+str(esoph)
+```
+由于数据类型的文章属于太基础的知识，很多人写了太多文章，这里我就不赘述了。想继续深入了解的移步
+
+[第 4 章 向量 | 数据科学中的 R 语言 ](https://bookdown.org/wangminjie/R4DS/baseR-vectors.html)
+[R Data types 101, or What kind of data do I have? | R (for ecology)](https://www.rforecology.com/post/data-types-in-r/)
+
+数据类型也像数据结构那样，可以转变的，比如，我们把表格中`alcgp`这一列转化成`character`。
+
+```{r}
+#| echo: true
+esoph$alcgp <-  as.character(esoph$alcgp)
+str(esoph)
+```
+
+### 统计学角度理解数据类型
+
+统计学角度，数据类型不同，则统计分析方法不同。我们可以参考这篇经典的统计学思维数据分类
+
+[Chapter 1 Hello data | Introduction to Modern Statistics](https://openintro-ims.netlify.app/data-hello.html#variable-types)
+
+简单来说，有如下类型
+
+- **Numeric**
+	Data that are expressed on a numeric scale.
+	- Continuous
+	Data that can take on any value in an interval. (Synonyms: interval, float, numeric)
+	- Discrete
+	Data that can take on only integer values, such as counts. (Synonyms: integer, count)
+- **Categorical**
+Data that can take on only a specific set of values representing a set of possible categories. (Synonyms: enums, enumerated, factors)
+	- Binary
+	A special case of categorical data with just two categories of values, e.g., 0/1, true/false. (Synonyms: dichotomous, logical, indicator, boolean)
+	- nominal
+	Categorical data that has no explicit ordering.
+	- Ordinal
+	Categorical data that has an explicit ordering. (Synonym: ordered factor)
+
+:::{.callout-note}
+为什么统计学家要将表格数据这样分类，我们下面就要从tidy data这个难啃的骨头说起。
+:::

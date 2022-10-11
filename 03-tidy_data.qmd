@@ -1,0 +1,142 @@
+```{r}
+pacman::p_load(magrittr,rio)
+```
+
+# Tidy data
+
+![Hadley Wickham镇楼](image/03/Hadley_Wickham.jpg){fig-align="center" width="600"}
+
+这个题目真的很难讲，因为Hadley Wickham只用了三句非常简短的话概括了什么是 Tidy data（整洁数据）。 这三句话也成为了R领域关于数据框类型数据的圣经。之所以又说难理解，因为话说简单了，就容易让不同人有不同的理解。 有时候要相信大道至简，你越是想用更多的话去描述它，就越描述不清。
+
+[Tidy data \| R for Data Science](https://r4ds.had.co.nz/tidy-data.html)
+
+::: callout-note
+-   Each variable must have its own column.
+-   Each observation must have its own row.
+-   Each value must have its own cell.
+:::
+
+其实这句话也有很多变种，但无论怎么变，都是在表达一个意思
+
+[Tidy data • tidyr](https://tidyr.tidyverse.org/articles/tidy-data.html)
+
+-   Every column is a variable.
+-   Every row is an observation.
+-   Every cell is a single value.
+
+[Tidy data for efficiency, reproducibility, and collaboration](https://www.openscapes.org/blog/2020/10/12/tidy-data/)
+
+-   Each variable forms a column.
+-   Each observation forms a row.
+-   Each cell is a single measurement.
+
+这是一种表格数据组织的规范，这个规范告诉我们，看起来都是表，但不一定符合标准，不能直接用来分析。 Hadley Wickham曾经效仿俄罗斯著名文豪Leo Tolstoy（托尔斯泰）的一句名言
+
+> Happy families are all alike; every unhappy family is unhappy in its own way --- Leo Tolstoy
+
+Like families, `tidy datasets are all alike but every messy dataset is messy in its own way.`
+
+**整洁的表格数据都差不多，但烂表格数据都烂的各不相同**
+
+## column-variable
+
+> Each variable must have its own column. 每一个变量都有自己的列
+
+在理解这一句时，首先要搞懂，什么是`variable`。作为医学研究，我们可以理解为研究对象的属性(attribute)，比如，病人的年龄、性别、收入等。`variable`是根据你要做的研究业务需求而设立的，比如最常见的RCT研究，不同的治疗方法或者说治疗组+对照组一起构成了group这个`variable`(列)。`variable`在中文也被称为字段。
+
+variable根据业务需要，还可分为两类
+
+1.  自变量（X），也被称为input, predictor, (independent) variable, regressor, covariate, feature, explanatory variable
+2.  因变量（Y），也被称为dependent variable, response, outcome, target, output, response variable
+
+比如，下面这个数据，如果我们把是否早产（premature）作为要预测的Y（response），其他变量就可以定为X（predictors）
+
+```{r}
+#| label: tbl-birth
+#| tbl-cap: "Birth table"
+births <- import("dataset/births.rda") 
+births
+
+```
+
+::: callout-note
+复习：前面我们知道变量里的值可以是计量资料和分类资料，对应统计学模型就是回归问题或分类问题。
+
+-   In the regression problem, Y is numeric (e.g price, blood pressure).
+-   In the classification problem, Y takes values in a finite, unordered set (survived/died, cancer class of tissue sample).
+:::
+
+## row-observation
+
+> Each observation must have its own row. 每一条记录都有自己行。
+
+observation也有很多同义词，如case, example, instance, record, pattern, sample。每一条记录都是独立的，都代表一个个体。也可以参考刚才的表格，一个记录就是一个新生儿  @tbl-birth。
+
+## cell-value
+
+> Each value must have its own cell.一个单元格只能有一个值。
+
+其实这个第三条，可以不要，因为行和列就可以确定一个坐标，也就是一个单元格，行和列没有问题，单元格也就不会有问题。 这里的问题主要出现在单元格里数据格式不统一，如，下表alcgp列有些加了g/day，，有些没有。
+
+```{r}
+esoph
+```
+
+## 烂数据长啥样？
+
+举几个例子
+
+[What's Tidy Data?. How to organize messy datasets in| Towards Data Science](https://towardsdatascience.com/whats-tidy-data-how-to-organize-messy-datasets-in-python-with-melt-and-pivotable-functions-5d52daa996c9)
+
+1.  Column headers are values, not variable names.即把value当成了variable。如果你用过Graphpad这里软件，你就知道他们的数据格式是这样的
+
+```{r}
+
+# 假设这是用了药以后兔子体重增长情况kg
+drugrct <- data.frame(
+  drugA = c(0.7, 1.0, 1.5, 1.8, 2.2),
+  drugB = c(0.5, 0.7, 0.9, 1.3, 1.8),
+  drugC = c(0.3, 0.6, 1.0, 1.2, 3.3)
+)
+
+drugrct
+```
+
+这就是典型的把value当成了variable，实质上，应该变成2列。我们要研究的是不同组别（group）这个变量，体重增长水平有没有差异.
+
+正确的表格，应该这样
+
+```{r}
+library(tidyr)
+melted <- gather(drugrct, group, weight)
+melted
+```
+
+2.  Multiple variables are stored in one column.多个变量共享一列
+
+```{r}
+
+# 性别年龄在一个列
+eg1 <- data.frame(
+  sex_age = c('m7', 'f9', 'f8', 'm8', 'f8'),
+  value = c(0.5, 0.7, 0.9, 1.3, 1.8))
+
+eg1
+```
+
+## Tidy Data = rectangular data
+
+如果你想快速判断是不是tidy data
+
+只要确定三个唯一，一列对应唯一一个变量，一行对应唯一一个记录，单元格里只有一个值。 Tidy Data = rectangular data，Tidy Data必须是方形的。
+
+![这个数据不是方形的](image/03/nonrectang.png){fig-align="center"}
+
+## 有什么好处
+
+Tidy data 带来了什么？究竟有什么好处？
+
+1. 提高效率。所有人在录入数据和构建数据集时，尽量采取该规范，这样就可以尽量省去数据清洗的环节。即便数据确实一团糟，但也有了一个整理的方向和构架，而当前无论是`tidyverse`系列的工具还是`data.table`这样的工具，都是为了tidydata设计的。对于不同的软件，如果都采取该规范，在软件之间的互通也方便，比如spss数据确实可以直接在R进行分析，但Graphpad的数据就无法直接在R使用。
+2. 便于协作。当前是大数据时代，数据往往都是海量。数据在采集时，都是分工协作，采集不同的信息，大家都遵循该规范时，在数据整合时就可以无缝衔接。而且，有时候可能有多个表格，需要合并，符合tidy data规范，就按某个字段直接合并即可。
+3. 便于数据开源。科学研究，重要的是可重复性和复用，有了Tidy data，科研更透明，任何人都可对数据进行更新、合并，为我所用。
+
