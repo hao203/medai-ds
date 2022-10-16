@@ -14,15 +14,17 @@ book:
       chapters:
         - 01-hello_data.qmd
         - 02-Data types.qmd
+        - 03-tidy_data.qmd
+        - 04-data IO.qmd
     - summary.qmd
     - references.qmd
 
 bibliography: references.bib
 
-
 format:
   html:
-    theme: default
+    theme: cosmo
+    df-print: paged
   pdf:
     documentclass: scrreprt
     include-in-header: 
