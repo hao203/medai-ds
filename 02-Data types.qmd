@@ -118,6 +118,7 @@ str(esoph)
 由于数据类型的文章属于太基础的知识，很多人写了太多文章，这里我就不赘述了。想继续深入了解的移步
 
 [第 4 章 向量 | 数据科学中的 R 语言 ](https://bookdown.org/wangminjie/R4DS/baseR-vectors.html)
+
 [R Data types 101, or What kind of data do I have? | R (for ecology)](https://www.rforecology.com/post/data-types-in-r/)
 
 数据类型也像数据结构那样，可以转变的，比如，我们把表格中`alcgp`这一列转化成`character`。
