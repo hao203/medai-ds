@@ -57,7 +57,7 @@ df1 <- read.csv("https://labfile.oss.aliyuncs.com/courses/1283/mlbootcamp5_train
 class(df1)
 
 df2 <- read.csv("dataset/Song.csv")
-df2
+head(df2)
 ```
 
 ### 读取其他文件
@@ -79,7 +79,7 @@ class(df3)
 library(readxl)
 exceldf <- readxl_example("datasets.xlsx") 
 quake <- read_excel(exceldf, sheet = "quakes")
-quake
+head(quake,8)
 ```
 
 此外，还有一个包`haven`，用来读取 SAS, SPSS, and Stata的数据文件
@@ -121,3 +121,10 @@ import("dataset/quake.xlsx")
 export(quake, "dataset/quake.rds")
 ```
 
+## 其他数据获取方式
+
+可以从数据库读取、API读取，还可以利用爬虫爬取。
+
+- Connecting to Databases: RSQLite
+- Web APIs
+- 爬虫（https://www.scraperapi.com/blog/web-scraping-with-r/）

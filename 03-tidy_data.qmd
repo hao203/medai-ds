@@ -55,7 +55,7 @@ variable根据业务需要，还可分为两类
 #| label: tbl-birth
 #| tbl-cap: "Birth table"
 births <- import("dataset/births.rda") 
-births
+head(births,10)
 
 ```
 

@@ -16,7 +16,7 @@ book:
         - 02-Data types.qmd
         - 03-tidy_data.qmd
         - 04-data IO.qmd
-    - summary.qmd
+    - tips.qmd
     - references.qmd
 
 bibliography: references.bib
@@ -27,6 +27,7 @@ format:
     df-print: paged
   pdf:
     documentclass: scrreprt
+    df-print: default
     include-in-header: 
       text: |
         \usepackage{ctex}

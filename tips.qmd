@@ -1,0 +1,10 @@
+# Tips
+
+## 管道操作%>%
+
+为什么R要这样写代码？
+
+参考http://blog.fens.me/r-magrittr/
+
+## 为什么要用Quarto 或R Markdown
+
