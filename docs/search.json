@@ -1,0 +1,135 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "R语言医学数据科学入门",
+    "section": "",
+    "text": "Preface\nThis is supported by Quarto book.\nTo learn more about Quarto books visit https://quarto.org/docs/books.\n本教程的代码和演示基于R，并不需要编程基础。\n本教程注重项目实践和知识理解，弱化编程和数学。\n\n\n\n\n\n\nNote\n\n\n\n因为我不是计算机专业，数学也确实学的不太好。"
+  },
+  {
+    "objectID": "intro.html",
+    "href": "intro.html",
+    "title": "Introduction",
+    "section": "",
+    "text": "This is a book created from markdown and executable code.\nSee Knuth (1984) for additional discussion of literate programming.\n\n\n[1] 2\n\n\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+  },
+  {
+    "objectID": "01-hello_data.html#什么是数据",
+    "href": "01-hello_data.html#什么是数据",
+    "title": "1  Hello data",
+    "section": "1.1 什么是数据",
+    "text": "1.1 什么是数据\n我的理解，凡是能够储存在存储介质里的都是数据。不同的计算机从业者，看待数据的角度是不同的。如数据修复，更看重数据的底层，必须知道数据如何存储，如何在winhex那一串的数字中寻找答案；操作系统，更关心的是数据存储分配，存储共享，存储保护，存储扩张等。\n在这个教程（书）中，我们关心的是具备一定规范、规律，且具备分析价值的数据。我们要学会导入、清洗、分析、利用好这样的数据，这也就是所谓的”数据科学（data science）“。"
+  },
+  {
+    "objectID": "01-hello_data.html#数据的类型",
+    "href": "01-hello_data.html#数据的类型",
+    "title": "1  Hello data",
+    "section": "1.2 数据的类型",
+    "text": "1.2 数据的类型\n数据科学家（暂且用这么高端的名字吧）认为具备分析价值的数据是什么样的呢？我想到了以下数据类型，当然有些数据是原始状态，在正式进入分析以前，是需要先做预处理的（Pre-processing）。下面我列举一些常见的数据类型。\n\n1.2.1 文本数据\n在这里，我把文本形式存储的数据全部叫文本数据。这些数据，有些是按照事先约定好的形式和格式采集和录入而形成的表格型数据（像excel），也有普通的一本书、一篇文章这样的纯粹文字数据。其中，表格型数据（dataframe）是我们使用最多，最需要掌握的数据类型。\n\n\n\n\n\n\nNote\n\n\n\n这里我是这样讲文本数据的定义，其他专家可能有不同归类或理解\n\n\n\n数据框（dataframe）\n\ndataframe 顾名思义，也叫方形数据（Rectangular Data）。Python（pandas包）和R都将这种数据称为dataframe，也是最常见的数据对象。 在R中，还有tibble和data.table这类dataframe的变种，本质上还是方形数据，只不过用来处理的包和风格不太相同。\n这就是一个dataframe例子\n\n\n\n\n\nagegp\nalcgp\ntobgp\nncases\nncontrols\n\n\n\n\n25-34\n0-39g/day\n0-9g/day\n0\n40\n\n\n25-34\n0-39g/day\n10-19\n0\n10\n\n\n25-34\n0-39g/day\n20-29\n0\n6\n\n\n25-34\n0-39g/day\n30+\n0\n5\n\n\n25-34\n40-79\n0-9g/day\n0\n27\n\n\n25-34\n40-79\n10-19\n0\n7\n\n\n25-34\n40-79\n20-29\n0\n4\n\n\n25-34\n40-79\n30+\n0\n7\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\n我们后面还会详细讲解Rectangular Data，尤其是tidy data作为一种规范的dataframe，请稍安勿躁。\n\n\n\n纯粹文本Plain text\n\n纯文本，因为它纯了，就是普通不加任何清洗和修改的自然文字段落。\n\n\n1.2.2 其他数据\n\n时间序列Time series data\n大部分信号处理都是这类数据，比如心电图、股票、声波。\n空间数据Spatial data\n地图、导航类似的数据。\n图神经网络Graph (or network) data\n\nIn computer science and information technology, the term graph typically refers to a depiction of the connections among entities, and to the underlying data structure.在计算机科学和信息技术中，术语”图”通常指实体之间的连接和底层数据结构的描述。如图神经网络。\n\n图像和视频数据image data and video data"
+  },
+  {
+    "objectID": "02-Data types.html#数据结构",
+    "href": "02-Data types.html#数据结构",
+    "title": "2  数据结构和类型",
+    "section": "2.1 数据结构",
+    "text": "2.1 数据结构\n\n\n\n\n\n\nTip\n\n\n\n我们要从大到小一步一步来描述和理解数据。\n\n\n我们看到一个对象（变量），首先要知道它是什么样的容器（数据结构），然后再看里面装了什么（数据值）。比如，你看到一个瓶子（结构），里面装了水（值）。\n\n2.1.1 向量\n下面，我们看看R中，最基本的数据类型，向量（vector）。\n在这段代码中，\n\na是矩阵（结构），里面有6个数字（11-16）。\nb是列表（结构），但它也认为其实是向量（vector），里面装的内容五花八门。\nA是把通过as.vector()函数，将矩阵转化成了向量。\nc就是一个普通的向量\n\n\na <- matrix(11:16, nrow=3, ncol=2)\nb <- list(1,\"dogs\",cars, a)\nc <- 5\nA <- as.vector(a)\n\nis.vector(a)\n\n[1] FALSE\n\nis.vector(A)\n\n[1] TRUE\n\nis.vector(b)\n\n[1] TRUE\n\nis.vector(c)\n\n[1] TRUE\n\n\n\n\n\n\n\n\nWarning\n\n\n\nvector向量，作为R最基本的数据结构，就像哆啦A梦的口袋，什么都可以装，并且任何其他数据类型都可以转化为向量。\n\n\n\n\n2.1.2 其他数据结构\n刚刚其实我们已经看到了R的三种数据结构，包括list、matrix和向量。我们可以用 class()函数查看一下\n\nclass(a)\n\n[1] \"matrix\" \"array\" \n\nclass(b)\n\n[1] \"list\"\n\n\n此外，R里面还有多维数组（array）,其实，刚刚看到的matrix其实也是属于二维数组（array）。下面我们还要重点介绍data.frame和类似数据框的对象，如前面提到的tibble和data.table\n\n\n2.1.3 再次理解Rectangular Data\n统计分析中最常见的原始数据形式是类似于数据库表或Excel数据表的形式。 这样形式的数据在R中叫做数据框(data.frame)。 数据框类似于一个矩阵，有行、列， 但各列允许有不同类型：数值型、因子、字符、日期时间等。 同一列的数据类型一般是相同的。 还是以esoph这个数据对象为例。\n\n\n\ndata.frame 表\n\n\nagegp\nalcgp\ntobgp\nncases\nncontrols\n\n\n\n\n25-34\n0-39g/day\n0-9g/day\n0\n40\n\n\n25-34\n0-39g/day\n10-19\n0\n10\n\n\n25-34\n0-39g/day\n20-29\n0\n6\n\n\n25-34\n0-39g/day\n30+\n0\n5\n\n\n25-34\n40-79\n0-9g/day\n0\n27\n\n\n25-34\n40-79\n10-19\n0\n7\n\n\n\n\n\n我们查看一下它的类型\n\nclass(esoph)\n\n[1] \"data.frame\"\n\n\n我们把它转化成其他的表格对象\n\nas_tibble(esoph) %>% #转化成tibble对象\n  class()\n\n[1] \"tbl_df\"     \"tbl\"        \"data.frame\"\n\n\n\nas.data.table(esoph) %>% #转化成data.table对象\n  class()\n\n[1] \"data.table\" \"data.frame\"\n\n\n看上去，他们并没有区别，但在后面具体的操作上，会有一些差别，后面具体实践，我们再去理解。\n\nas.data.table(esoph) %>% #输出data.table\n  head() %>% \n  knitr::kable(caption = \"data.table 表\")\n\n\ndata.table 表\n\n\nagegp\nalcgp\ntobgp\nncases\nncontrols\n\n\n\n\n25-34\n0-39g/day\n0-9g/day\n0\n40\n\n\n25-34\n0-39g/day\n10-19\n0\n10\n\n\n25-34\n0-39g/day\n20-29\n0\n6\n\n\n25-34\n0-39g/day\n30+\n0\n5\n\n\n25-34\n40-79\n0-9g/day\n0\n27\n\n\n25-34\n40-79\n10-19\n0\n7\n\n\n\n\n\n\n\n2.1.4 数据类型\n接下来，我们看看数据框（盒子）里面到底装的是什么。\n我们刚刚看到，表格里面是一些数字、文字之类的。在R中将这些数据划分为这些类型\n\nNumeric (1.2, 5, 7, 3.14159)\nInteger (1, 2, 3, 4, 5)\nComplex (i + 4)\nLogical (TRUE / FALSE)\nCharacter (“a”, “apple”)\nFactor (以后再探讨)\n\n我们可以看看，这个表格中每个列都是什么类型的数据。\n\nstr(esoph)\n\n'data.frame':   88 obs. of  5 variables:\n $ agegp    : Ord.factor w/ 6 levels \"25-34\"<\"35-44\"<..: 1 1 1 1 1 1 1 1 1 1 ...\n $ alcgp    : Ord.factor w/ 4 levels \"0-39g/day\"<\"40-79\"<..: 1 1 1 1 2 2 2 2 3 3 ...\n $ tobgp    : Ord.factor w/ 4 levels \"0-9g/day\"<\"10-19\"<..: 1 2 3 4 1 2 3 4 1 2 ...\n $ ncases   : num  0 0 0 0 0 0 0 0 0 0 ...\n $ ncontrols: num  40 10 6 5 27 7 4 7 2 1 ...\n\n\n由于数据类型的文章属于太基础的知识，很多人写了太多文章，这里我就不赘述了。想继续深入了解的移步\n第 4 章 向量 | 数据科学中的 R 语言\nR Data types 101, or What kind of data do I have? | R (for ecology)\n数据类型也像数据结构那样，可以转变的，比如，我们把表格中alcgp这一列转化成character。\n\nesoph$alcgp <-  as.character(esoph$alcgp)\nstr(esoph)\n\n'data.frame':   88 obs. of  5 variables:\n $ agegp    : Ord.factor w/ 6 levels \"25-34\"<\"35-44\"<..: 1 1 1 1 1 1 1 1 1 1 ...\n $ alcgp    : chr  \"0-39g/day\" \"0-39g/day\" \"0-39g/day\" \"0-39g/day\" ...\n $ tobgp    : Ord.factor w/ 4 levels \"0-9g/day\"<\"10-19\"<..: 1 2 3 4 1 2 3 4 1 2 ...\n $ ncases   : num  0 0 0 0 0 0 0 0 0 0 ...\n $ ncontrols: num  40 10 6 5 27 7 4 7 2 1 ...\n\n\n\n\n2.1.5 统计学角度理解数据类型\n统计学角度，数据类型不同，则统计分析方法不同。我们可以参考这篇经典的统计学思维数据分类\nChapter 1 Hello data | Introduction to Modern Statistics\n简单来说，有如下类型\n\nNumeric Data that are expressed on a numeric scale.\n\nContinuous Data that can take on any value in an interval. (Synonyms: interval, float, numeric)\nDiscrete Data that can take on only integer values, such as counts. (Synonyms: integer, count)\n\nCategorical Data that can take on only a specific set of values representing a set of possible categories. (Synonyms: enums, enumerated, factors)\n\nBinary A special case of categorical data with just two categories of values, e.g., 0/1, true/false. (Synonyms: dichotomous, logical, indicator, boolean)\nnominal Categorical data that has no explicit ordering.\nOrdinal Categorical data that has an explicit ordering. (Synonym: ordered factor)\n\n\n\n\n\n\n\n\nNote\n\n\n\n为什么统计学家要将表格数据这样分类，我们下面就要从tidy data这个难啃的骨头说起。"
+  },
+  {
+    "objectID": "03-tidy_data.html#column-variable",
+    "href": "03-tidy_data.html#column-variable",
+    "title": "3  Tidy data",
+    "section": "3.1 column-variable",
+    "text": "3.1 column-variable\n\nEach variable must have its own column. 每一个变量都有自己的列\n\n在理解这一句时，首先要搞懂，什么是variable。作为医学研究，我们可以理解为研究对象的属性(attribute)，比如，病人的年龄、性别、收入等。variable是根据你要做的研究业务需求而设立的，比如最常见的RCT研究，不同的治疗方法或者说治疗组+对照组一起构成了group这个variable(列)。variable在中文也被称为字段。\nvariable根据业务需要，还可分为两类\n\n自变量（X），也被称为input, predictor, (independent) variable, regressor, covariate, feature, explanatory variable\n因变量（Y），也被称为dependent variable, response, outcome, target, output, response variable\n\n比如，下面这个数据，如果我们把是否早产（premature）作为要预测的Y（response），其他变量就可以定为X（predictors）\n\n\n\n\n Table 3.1:  Birth table \n  \n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\n复习：前面我们知道变量里的值可以是计量资料和分类资料，对应统计学模型就是回归问题或分类问题。\n\nIn the regression problem, Y is numeric (e.g price, blood pressure).\nIn the classification problem, Y takes values in a finite, unordered set (survived/died, cancer class of tissue sample)."
+  },
+  {
+    "objectID": "03-tidy_data.html#row-observation",
+    "href": "03-tidy_data.html#row-observation",
+    "title": "3  Tidy data",
+    "section": "3.2 row-observation",
+    "text": "3.2 row-observation\n\nEach observation must have its own row. 每一条记录都有自己行。\n\nobservation也有很多同义词，如case, example, instance, record, pattern, sample。每一条记录都是独立的，都代表一个个体。也可以参考刚才的表格，一个记录就是一个新生儿 Table 3.1。"
+  },
+  {
+    "objectID": "03-tidy_data.html#cell-value",
+    "href": "03-tidy_data.html#cell-value",
+    "title": "3  Tidy data",
+    "section": "3.3 cell-value",
+    "text": "3.3 cell-value\n\nEach value must have its own cell.一个单元格只能有一个值。\n\n其实这个第三条，可以不要，因为行和列就可以确定一个坐标，也就是一个单元格，行和列没有问题，单元格也就不会有问题。 这里的问题主要出现在单元格里数据格式不统一，如，下表alcgp列有些加了g/day，，有些没有。"
+  },
+  {
+    "objectID": "03-tidy_data.html#烂数据长啥样",
+    "href": "03-tidy_data.html#烂数据长啥样",
+    "title": "3  Tidy data",
+    "section": "3.4 烂数据长啥样？",
+    "text": "3.4 烂数据长啥样？\n举几个例子\nWhat’s Tidy Data?. How to organize messy datasets in| Towards Data Science\n\nColumn headers are values, not variable names.即把value当成了variable。如果你用过Graphpad这里软件，你就知道他们的数据格式是这样的\n\n\n\n\n\n  \n\n\n\n这就是典型的把value当成了variable，实质上，应该变成2列。我们要研究的是不同组别（group）这个变量，体重增长水平有没有差异.\n正确的表格，应该这样\n\n\n\n\n  \n\n\n\n\nMultiple variables are stored in one column.多个变量共享一列"
+  },
+  {
+    "objectID": "03-tidy_data.html#tidy-data-rectangular-data",
+    "href": "03-tidy_data.html#tidy-data-rectangular-data",
+    "title": "3  Tidy data",
+    "section": "3.5 Tidy Data = rectangular data",
+    "text": "3.5 Tidy Data = rectangular data\n如果你想快速判断是不是tidy data\n只要确定三个唯一，一列对应唯一一个变量，一行对应唯一一个记录，单元格里只有一个值。 Tidy Data = rectangular data，Tidy Data必须是方形的。\n\n\n\n这个数据不是方形的"
+  },
+  {
+    "objectID": "03-tidy_data.html#有什么好处",
+    "href": "03-tidy_data.html#有什么好处",
+    "title": "3  Tidy data",
+    "section": "3.6 有什么好处",
+    "text": "3.6 有什么好处\nTidy data 带来了什么？究竟有什么好处？\n\n提高效率。所有人在录入数据和构建数据集时，尽量采取该规范，这样就可以尽量省去数据清洗的环节。即便数据确实一团糟，但也有了一个整理的方向和构架，而当前无论是tidyverse系列的工具还是data.table这样的工具，都是为了tidydata设计的。对于不同的软件，如果都采取该规范，在软件之间的互通也方便，比如spss数据确实可以直接在R进行分析，但Graphpad的数据就无法直接在R使用。\n便于协作。当前是大数据时代，数据往往都是海量。数据在采集时，都是分工协作，采集不同的信息，大家都遵循该规范时，在数据整合时就可以无缝衔接。而且，有时候可能有多个表格，需要合并，符合tidy data规范，就按某个字段直接合并即可。\n便于数据开源。科学研究，重要的是可重复性和复用，有了Tidy data，科研更透明，任何人都可对数据进行更新、合并，为我所用。"
+  },
+  {
+    "objectID": "04-data IO.html#内置数据",
+    "href": "04-data IO.html#内置数据",
+    "title": "4  Data I/O",
+    "section": "4.1 内置数据",
+    "text": "4.1 内置数据\nR的内置数据，其实都是rds或`rda``为扩展名的数据文件，这类文件是R输出的，是R的原生数据文件\n想要调用他们也非常简单，比如R默认的内置方法data()，里面有很多示例数据， 你可以自己在电脑上试验一下，看看里面有哪些datasets。\n同样，很多R 的package里面也有自己的datasets，可以查看一下\n\n ds1 <- data(package=\"cluster\")   \n  ds1$results %>% \n    as.data.frame() %>% \n    .[,3:4]\n\n\n\n  \n\n\n\n当你加载（library）一个包时，它里面的dataset也会同时加载，想要调用某个数据集，直接输入其名字即可。"
+  },
+  {
+    "objectID": "04-data IO.html#载入读取数据",
+    "href": "04-data IO.html#载入读取数据",
+    "title": "4  Data I/O",
+    "section": "4.2 载入/读取数据",
+    "text": "4.2 载入/读取数据\n\n\n\n载入数据窗口\n\n\n表格数据的常见格式R都支持，可以在Rstudio直接操作（如图），并且不需要任何包就可以读取如csv、dcf、rds、rda R基础包，也就是没安装任何包之前，有一些基础函数，如read.csv，可以读取csv文件，读取完之后会将其作为一个data.frame对象。既可以读取本地，也可以读取网络链接。\n\ndf1 <- read.csv(\"https://labfile.oss.aliyuncs.com/courses/1283/mlbootcamp5_train.csv\") %>% \n  head(10)  \nclass(df1)\n\n[1] \"data.frame\"\n\ndf2 <- read.csv(\"dataset/Song.csv\")\nhead(df2)\n\n\n\n  \n\n\n\n\n4.2.1 读取其他文件\n数据读取的包还有几个，包括readr，它属于tidyverse系列的包之一，命令与R基础包非常相似，与前面不同的是读取到的数据会被当做tibble对象。\n\nlibrary(readr)\n\ndf3 <- read_csv(\"dataset/Song.csv\")\nclass(df3)\n\n[1] \"spec_tbl_df\" \"tbl_df\"      \"tbl\"         \"data.frame\" \n\n\n当然，我们别忘了，读取excel的文件，采用的是readxlpackage\n\n\n\n\n  \n\n\n\n此外，还有一个包haven，用来读取 SAS, SPSS, and Stata的数据文件 这里就不再用数据做演示了，只提供示例代码\n\nlibrary(haven)\nsas_mydf <-read_sas(\"mydf.sas7bdat\") # SAS文件读取\nsav_mydf <-read_sav(\"mydf.sav\") # SPSS\ndta_mydf <-read_dta(\"mydf.dta\") # Stata"
+  },
+  {
+    "objectID": "04-data IO.html#导出数据",
+    "href": "04-data IO.html#导出数据",
+    "title": "4  Data I/O",
+    "section": "4.3 导出数据",
+    "text": "4.3 导出数据\n读取数据学会了，导出数据就非常简单，前面大家都能总结出一定规律，凡是读取数据，都是read开头，导出数据，都是write开头。需要用到的包可以是openxlsx或writexl\n\nlibrary(openxlsx)\nwrite_csv(quake, \"dataset/quake.csv\")\nwrite.xlsx(quake, \"dataset/quake.xlsx\")"
+  },
+  {
+    "objectID": "04-data IO.html#瑞士军刀rio",
+    "href": "04-data IO.html#瑞士军刀rio",
+    "title": "4  Data I/O",
+    "section": "4.4 瑞士军刀rio",
+    "text": "4.4 瑞士军刀rio\n前面，大家一定觉得，我要导入数据，为什么记这么多命令啊，难道不能一个包，统一命令？\nrio号称是I/O的扛把子，瑞士军刀\n只需要记住两个命令，import和export。简单多了吧！\n\nlibrary(rio)\nimport(\"dataset/quake.xlsx\")\n\n\n\n  \n\n\nexport(quake, \"dataset/quake.rds\")"
+  },
+  {
+    "objectID": "04-data IO.html#其他数据获取方式",
+    "href": "04-data IO.html#其他数据获取方式",
+    "title": "4  Data I/O",
+    "section": "4.5 其他数据获取方式",
+    "text": "4.5 其他数据获取方式\n可以从数据库读取、API读取，还可以利用爬虫爬取。\n\nConnecting to Databases: RSQLite\nWeb APIs\n爬虫（https://www.scraperapi.com/blog/web-scraping-with-r/）"
+  },
+  {
+    "objectID": "tips.html#管道操作",
+    "href": "tips.html#管道操作",
+    "title": "Tips",
+    "section": "管道操作%>%",
+    "text": "管道操作%>%\n为什么R要这样写代码？%>%（pip operator）到底什么意思？ 参考R语言高效的管道操作magrittr | 粉丝日志 (fens.me)\n%>%看我代码中频繁出现， 这个操作符只有在加载magrittr后才能用。\n我们先看一个简单的程序\n\n取1000个随机数符合，符合正态分布。\n求这个1000个数的绝对值，同时乘以50。\n把结果组成一个100*100列的方阵。\n计算方阵中每行的均值，并四舍五入保留到整数。\n画出直方图。\n\n\n# 设置随机种子\nset.seed(101)\n\n# 开始 \nn1<-rnorm(1000)            # 第1步\nn2<-abs(n1)*50              # 第2步\nn3<-matrix(n2,ncol = 100)   # 第3步\nn4<-round(rowMeans(n3))     # 第4步\nhist(n4)                 # 第5步\n\n\n\n\n上面的代码写法是，每一行实现一个条件，但中间多了不少的临时变量。这无疑额外创建了很多没用的变量，对计算机来讲，就是垃圾变量占用内存，对于设计者来讲，看起来眼花。\n想一想，还有没有其他写法？\n我们看看下面这个，这是不同的嵌套，一层一层，将5步，一句语法实现。\n\nset.seed(101)\nhist(round(rowMeans(matrix(abs(rnorm(1000))*50,ncol=100))))\n\n\n\n\n\n\n\n\n\n\nWarning\n\n\n\n结果是一样。但这个写法，会让人觉得有点崩溃，一层套一层，稍有不慎，就少个括号，并且读起来半天才知道是做什么的。\n\n\n为了让代码读起来更像人话，我们就用到%>%，避免了创建一些无意义的中间变量，又看起来步骤分明。从里到外，一步一步，就像管道一样。\n\n# 加载magrittr\nlibrary(magrittr)\n# 设置随机种子\nset.seed(101)\n\n# 开始\nrnorm(1000) %>%\n  abs %>% `*` (50)  %>%\n  matrix(ncol=100)  %>%\n  rowMeans %>% round %>% \n  hist\n\n\n\n\n看起来好爽。每一步都很清晰。"
+  },
+  {
+    "objectID": "tips.html#为什么要用quarto-或r-markdown",
+    "href": "tips.html#为什么要用quarto-或r-markdown",
+    "title": "Tips",
+    "section": "为什么要用Quarto 或R Markdown",
+    "text": "为什么要用Quarto 或R Markdown"
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+  }
+]
