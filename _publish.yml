@@ -1,0 +1,4 @@
+- source: project
+  quarto-pub:
+    - id: 75a55c28-c8ac-4a91-9a48-17491c73f645
+      url: 'https://quartopub.com/sites/medai/r语言医学数据科学入门'
