@@ -16,6 +16,7 @@ book:
         - 02-Data types.qmd
         - 03-tidy_data.qmd
         - 04-data IO.qmd
+        - 05-tidy_task.qmd
     - tips.qmd
     - references.qmd
 

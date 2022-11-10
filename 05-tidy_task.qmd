@@ -1,0 +1,17 @@
+```{r}
+pacman::p_load(magrittr,rio,here)
+```
+
+# 数据清洗
+
+前面，我们花了不少篇幅，做了一些基础性的操作。在正式进入数据可视化和分析以前，我们还要学会如何将导入的原始数据，通过某些操作
+把数据转化成可以直接分析的整洁数据，这个过程就是数据清洗。英文名有很多，data cleaning，data wrangling，data manipulation，data munging, data transformation, data preparation等
+
+## 清洗步骤
+
+1. 数据变形
+2. 列操作
+3. 行操作
+4. 数据归一
+5. 清除重复和空值
+6. 数据合并
