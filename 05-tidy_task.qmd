@@ -1,17 +1,186 @@
-```{r}
-pacman::p_load(magrittr,rio,here)
-```
+
 
 # 数据清洗
 
 前面，我们花了不少篇幅，做了一些基础性的操作。在正式进入数据可视化和分析以前，我们还要学会如何将导入的原始数据，通过某些操作
-把数据转化成可以直接分析的整洁数据，这个过程就是数据清洗。英文名有很多，data cleaning，data wrangling，data manipulation，data munging, data transformation, data preparation等
+把数据转化成可以直接分析的整洁数据，这个过程就是数据清洗。英文名有很多，data cleaning，data wrangling，data manipulation，data munging, data transformation, data processing等
 
 ## 清洗步骤
 
-1. 数据变形
-2. 列操作
-3. 行操作
+这些步骤，前三步，顺序在某些情况下可以变化，比如可以先数据变形
+
+1. 列操作
+2. 行操作
+3. 数据变形
 4. 数据归一
 5. 清除重复和空值
 6. 数据合并
+
+## 列-行操作
+
+想一想，拿到表格数据后，我们应该做些什么。首先就是先留下自己想要的，不需要的内容我们可以剔除，比如，病人的姓名是隐私，一般不需要(剔除列)；一些记录不符合纳入标准，需要剔除掉，比如患者年龄太小或太大(剔除行)。这就需要列-行的操作。先进行列操作，是我的习惯，你当然也可以先操作行。
+
+需要加载的包，需要读取的数据如下
+
+```{r}
+#| echo: true
+pacman::p_load(tidyverse,rio)
+stroke <- import("dataset/stroke.csv")
+```
+
+在进行各种操作以前，我们一般先整体上看一下这个数据的状况，我们可以用一个函数`glimpse()`
+
+```{r}
+#| echo: true
+glimpse(stroke)
+```
+
+::: callout-note
+该数据集的变量名解释
+- doa : date of admission          
+- dod : date of discharge
+- status : event at discharge (alive or dead)        
+- sex : male or female          
+- dm : diabetes (yes or no)           
+- gcs : Glasgow Coma Scale (value from 3 to 15)          
+- sbp : Systolic blood pressure (mmHg)           
+- dbp : Diastolic blood pressure (mmHg)          
+- wbc : Total white cell count           
+- time2 : days in ward         
+- stroke_type : stroke type (Ischaemic stroke or Haemorrhagic stroke)  
+- referral_from : patient was referred from a hospital or not from a hospital
+:::
+
+### 列[选择-重命名-新列]
+
+列-行操作，用到的包主要是`dplyr`，隶属于tidyverse系列，按照习惯，我们直接加载tidyverse即可(前面已经加载过)。
+
+#### 选择列select()
+
+通过列号或者列名选择
+
+```{r}
+#| echo: true
+
+stroke2 <- stroke %>% 
+  select(1,3,sex,dm,stroke_type) %>% 
+  glimpse()
+```
+
+有时候,我们希望大部分列都保留,只剔除不想要的列,只需在列号或列名前加`-`
+
+```{r}
+#| echo: true
+
+stroke3 <- stroke %>% 
+  select(-1,-sex) %>% 
+  glimpse()
+```
+
+#### 重命名列rename()
+
+对列名字不太满意?
+```{r}
+#| echo: true
+
+stroke3 %>% 
+  rename(type = stroke_type, DM=dm) %>% 
+  glimpse()
+```
+
+
+其实,如果我们用`select()`命令,在选择行的同时,可以将重命名同时进行。
+
+:::{.callout-tip}
+想想，这样做和`rename()`有什么区别。
+:::
+
+```{r}
+#| echo: true
+
+stroke4 <- stroke %>% 
+  select( gender = sex, DM = dm) %>% 
+  glimpse()
+```
+
+#### 创建新列 mutate()
+
+我们想创建一个新列，是脉压值，pulse_p = 收缩压-舒张压。可以用mutate()
+
+```{r}
+#| echo: true
+
+stroke5 <- stroke %>% 
+  select(-1,-sex) %>% 
+  mutate(pulse_p = sbp - dbp) %>% 
+  glimpse()
+```
+
+:::{.callout-note}
+留个作业，如果你想创建一个新列，收缩压>140或舒张压>90为高血压，并赋值为HBP，其余赋值为norm。如何做？
+
+提示：我们可以用`ifelse`这个语句，ifelse(sbp>140|dbp>90, 'HBP', 'norm')
+:::
+
+#### 列的数据类型转换 mutate()
+
+```{r}
+#| echo: true
+
+stroke5 %>% 
+  mutate(status = as.factor(status)) %>% 
+  glimpse()
+```
+
+### 行操作 filter()
+
+行操作的需求一般就只有一个，把我要的记录筛选出来。
+
+比如我们创建一个名为stroke_m_9的数据集，筛选出Glasgow Coma Scale (gcs)>9分以上的男性。
+
+```{r}
+#| echo: true
+
+stroke_m_9 <- stroke %>% 
+  filter(sex == "male", gcs>9) %>% 
+  glimpse()
+```
+
+### 分组和运算
+
+有时候我们很想对数据进行分组，并分开计算。如我们想计算男女之间的血压均值分别是多少。可以分别用到`group_by()`和`summarize()`。
+
+```{r}
+#| echo: true
+
+stroke_sex <- stroke %>% 
+  group_by(sex) %>% 
+  summarise(meansbp = mean(sbp, na.rm = TRUE), # na.rm参数是剔除空值
+            meandbp  = mean(dbp, na.rm = TRUE),
+            meangcs = mean(gcs, na.rm = TRUE))
+```
+
+还可试试计算统计频数，如status这个代表是生存还是死亡。
+
+
+```{r}
+#| echo: true
+
+stroke_status <- stroke %>% 
+  group_by(sex) %>% 
+  count(status, sort = TRUE)
+```
+
+关于列-行操作，我们来总结一下`dplyr`的主要操作。
+
+大家要学会找速查表（cheatsheet），直接在搜索引擎搜索，某包的名字+cheatsheet即可，如dplyr cheatsheet。
+
+https://dplyr.tidyverse.org/
+
+-   `mutate()` adds new variables that are functions of existing
+    variables
+-   `select()` picks variables based on their names.
+-   `filter()` picks cases based on their values.
+-   `summarise()` reduces multiple values down to a single summary.
+-   `arrange()` changes the ordering of the rows.
+
