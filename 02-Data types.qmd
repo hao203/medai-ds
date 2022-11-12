@@ -62,8 +62,9 @@ class(b)
 统计分析中最常见的原始数据形式是类似于数据库表或Excel数据表的形式。 这样形式的数据在R中叫做数据框(data.frame)。 数据框类似于一个矩阵，有行、列， 但各列允许有不同类型：数值型、因子、字符、日期时间等。 同一列的数据类型一般是相同的。 还是以esoph这个数据对象为例。
 
 ```{r}
-head(esoph) %>% 
-  knitr::kable(caption = "data.frame 表")
+#| echo: true
+#| tbl-cap: "data.frame 表"
+head(esoph) 
 
 ```
 我们查看一下它的类型
@@ -92,8 +93,7 @@ as.data.table(esoph) %>% #转化成data.table对象
 ```{r}
 #| echo: true
 as.data.table(esoph) %>% #输出data.table
-  head() %>% 
-  knitr::kable(caption = "data.table 表")
+  head() 
 ```
 
 ### 数据类型
