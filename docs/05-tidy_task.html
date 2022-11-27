@@ -247,6 +247,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#行操作-filter" id="toc-行操作-filter" class="nav-link" data-scroll-target="#行操作-filter"><span class="toc-section-number">5.2.2</span>  行操作 filter()</a></li>
   <li><a href="#分组和运算" id="toc-分组和运算" class="nav-link" data-scroll-target="#分组和运算"><span class="toc-section-number">5.2.3</span>  分组和运算</a></li>
   </ul></li>
+  <li><a href="#数据变形-tidyr" id="toc-数据变形-tidyr" class="nav-link" data-scroll-target="#数据变形-tidyr"><span class="toc-section-number">5.3</span>  数据变形 tidyr</a>
+  <ul class="collapse">
+  <li><a href="#长宽数据转换" id="toc-长宽数据转换" class="nav-link" data-scroll-target="#长宽数据转换"><span class="toc-section-number">5.3.1</span>  长宽数据转换</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -321,17 +325,31 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>该数据集的变量名解释 - doa : date of admission<br>
-- dod : date of discharge - status : event at discharge (alive or dead)<br>
-- sex : male or female<br>
-- dm : diabetes (yes or no)<br>
-- gcs : Glasgow Coma Scale (value from 3 to 15)<br>
-- sbp : Systolic blood pressure (mmHg)<br>
-- dbp : Diastolic blood pressure (mmHg)<br>
-- wbc : Total white cell count<br>
-- time2 : days in ward<br>
-- stroke_type : stroke type (Ischaemic stroke or Haemorrhagic stroke)<br>
-- referral_from : patient was referred from a hospital or not from a hospital</p>
+<p>该数据集的变量名解释</p>
+<ul>
+<li>doa : date of admission<br>
+</li>
+<li>dod : date of discharge</li>
+<li>status : event at discharge (alive or dead)<br>
+</li>
+<li>sex : male or female<br>
+</li>
+<li>dm : diabetes (yes or no)<br>
+</li>
+<li>gcs : Glasgow Coma Scale (value from 3 to 15)<br>
+</li>
+<li>sbp : Systolic blood pressure (mmHg)<br>
+</li>
+<li>dbp : Diastolic blood pressure (mmHg)<br>
+</li>
+<li>wbc : Total white cell count<br>
+</li>
+<li>time2 : days in ward<br>
+</li>
+<li>stroke_type : stroke type (Ischaemic stroke or Haemorrhagic stroke)<br>
+</li>
+<li>referral_from : patient was referred from a hospital or not from a hospital</li>
+</ul>
 </div>
 </div>
 <section id="列选择-重命名-新列" class="level3" data-number="5.2.1">
@@ -530,7 +548,7 @@ $ referral_from &lt;chr&gt; "non-hospital", "non-hospital", "hospital", "non-hos
 </div>
 <p>关于列-行操作，我们来总结一下<code>dplyr</code>的主要操作。</p>
 <p>大家要学会找速查表（cheatsheet），直接在搜索引擎搜索，某包的名字+cheatsheet即可，如dplyr cheatsheet。</p>
-<p>https://github.com/rstudio/cheatsheets/blob/main/data-transformation.pdf</p>
+<p>https://dplyr.tidyverse.org/</p>
 <ul>
 <li><code>mutate()</code> adds new variables that are functions of existing variables</li>
 <li><code>select()</code> picks variables based on their names.</li>
@@ -538,6 +556,94 @@ $ referral_from &lt;chr&gt; "non-hospital", "non-hospital", "hospital", "non-hos
 <li><code>summarise()</code> reduces multiple values down to a single summary.</li>
 <li><code>arrange()</code> changes the ordering of the rows.</li>
 </ul>
+</section>
+</section>
+<section id="数据变形-tidyr" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="数据变形-tidyr"><span class="header-section-number">5.3</span> 数据变形 tidyr</h2>
+<section id="长宽数据转换" class="level3" data-number="5.3.1">
+<h3 data-number="5.3.1" class="anchored" data-anchor-id="长宽数据转换"><span class="header-section-number">5.3.1</span> 长宽数据转换</h3>
+<p>Reshaping Data from Wide (Fat) to Long (Tall)</p>
+<p>宽数据变长数据</p>
+<p>首先来看看什么是宽数据。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pwide <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"dataset/pwide.csv"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>这个数据来自<a href="https://www.gapminder.org/data/">Gapminder</a>。代表每个国家每年的民主指数。</p>
+<p>我们看到，这个表格是把年作为了列名，但其实，我们需要的是年作为变量（variable），然后具体的年份作为数值，存入该变量。只需要一个tidyr包的<code>pivot_longer</code>命令即可。这样就符合整洁数据的要求。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_longer</span>(pwide,</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">cols =</span> <span class="sc">!</span>country, <span class="co">#选择要改变的列</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">names_to =</span> <span class="st">"year"</span>, <span class="co">#变量名合并至新列</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">values_to =</span> <span class="st">"score"</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>             )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["year"],"name":[2],"type":["chr"],"align":["left"]},{"label":["score"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Albania","2":"1952","3":"-9"},{"1":"Albania","2":"1957","3":"-9"},{"1":"Albania","2":"1962","3":"-9"},{"1":"Albania","2":"1967","3":"-9"},{"1":"Albania","2":"1972","3":"-9"},{"1":"Albania","2":"1977","3":"-9"},{"1":"Albania","2":"1982","3":"-9"},{"1":"Albania","2":"1987","3":"-9"},{"1":"Albania","2":"1992","3":"5"},{"1":"Albania","2":"1997","3":"5"},{"1":"Albania","2":"2002","3":"7"},{"1":"Albania","2":"2007","3":"9"},{"1":"Argentina","2":"1952","3":"-9"},{"1":"Argentina","2":"1957","3":"-1"},{"1":"Argentina","2":"1962","3":"-1"},{"1":"Argentina","2":"1967","3":"-9"},{"1":"Argentina","2":"1972","3":"-9"},{"1":"Argentina","2":"1977","3":"-9"},{"1":"Argentina","2":"1982","3":"-8"},{"1":"Argentina","2":"1987","3":"8"},{"1":"Argentina","2":"1992","3":"7"},{"1":"Argentina","2":"1997","3":"7"},{"1":"Argentina","2":"2002","3":"8"},{"1":"Argentina","2":"2007","3":"8"},{"1":"Armenia","2":"1952","3":"-9"},{"1":"Armenia","2":"1957","3":"-7"},{"1":"Armenia","2":"1962","3":"-7"},{"1":"Armenia","2":"1967","3":"-7"},{"1":"Armenia","2":"1972","3":"-7"},{"1":"Armenia","2":"1977","3":"-7"},{"1":"Armenia","2":"1982","3":"-7"},{"1":"Armenia","2":"1987","3":"-7"},{"1":"Armenia","2":"1992","3":"7"},{"1":"Armenia","2":"1997","3":"-6"},{"1":"Armenia","2":"2002","3":"5"},{"1":"Armenia","2":"2007","3":"5"},{"1":"Australia","2":"1952","3":"10"},{"1":"Australia","2":"1957","3":"10"},{"1":"Australia","2":"1962","3":"10"},{"1":"Australia","2":"1967","3":"10"},{"1":"Australia","2":"1972","3":"10"},{"1":"Australia","2":"1977","3":"10"},{"1":"Australia","2":"1982","3":"10"},{"1":"Australia","2":"1987","3":"10"},{"1":"Australia","2":"1992","3":"10"},{"1":"Australia","2":"1997","3":"10"},{"1":"Australia","2":"2002","3":"10"},{"1":"Australia","2":"2007","3":"10"},{"1":"Austria","2":"1952","3":"10"},{"1":"Austria","2":"1957","3":"10"},{"1":"Austria","2":"1962","3":"10"},{"1":"Austria","2":"1967","3":"10"},{"1":"Austria","2":"1972","3":"10"},{"1":"Austria","2":"1977","3":"10"},{"1":"Austria","2":"1982","3":"10"},{"1":"Austria","2":"1987","3":"10"},{"1":"Austria","2":"1992","3":"10"},{"1":"Austria","2":"1997","3":"10"},{"1":"Austria","2":"2002","3":"10"},{"1":"Austria","2":"2007","3":"10"},{"1":"Azerbaijan","2":"1952","3":"-9"},{"1":"Azerbaijan","2":"1957","3":"-7"},{"1":"Azerbaijan","2":"1962","3":"-7"},{"1":"Azerbaijan","2":"1967","3":"-7"},{"1":"Azerbaijan","2":"1972","3":"-7"},{"1":"Azerbaijan","2":"1977","3":"-7"},{"1":"Azerbaijan","2":"1982","3":"-7"},{"1":"Azerbaijan","2":"1987","3":"-7"},{"1":"Azerbaijan","2":"1992","3":"1"},{"1":"Azerbaijan","2":"1997","3":"-6"},{"1":"Azerbaijan","2":"2002","3":"-7"},{"1":"Azerbaijan","2":"2007","3":"-7"},{"1":"Belarus","2":"1952","3":"-9"},{"1":"Belarus","2":"1957","3":"-7"},{"1":"Belarus","2":"1962","3":"-7"},{"1":"Belarus","2":"1967","3":"-7"},{"1":"Belarus","2":"1972","3":"-7"},{"1":"Belarus","2":"1977","3":"-7"},{"1":"Belarus","2":"1982","3":"-7"},{"1":"Belarus","2":"1987","3":"-7"},{"1":"Belarus","2":"1992","3":"7"},{"1":"Belarus","2":"1997","3":"-7"},{"1":"Belarus","2":"2002","3":"-7"},{"1":"Belarus","2":"2007","3":"-7"},{"1":"Belgium","2":"1952","3":"10"},{"1":"Belgium","2":"1957","3":"10"},{"1":"Belgium","2":"1962","3":"10"},{"1":"Belgium","2":"1967","3":"10"},{"1":"Belgium","2":"1972","3":"10"},{"1":"Belgium","2":"1977","3":"10"},{"1":"Belgium","2":"1982","3":"10"},{"1":"Belgium","2":"1987","3":"10"},{"1":"Belgium","2":"1992","3":"10"},{"1":"Belgium","2":"1997","3":"10"},{"1":"Belgium","2":"2002","3":"10"},{"1":"Belgium","2":"2007","3":"8"},{"1":"Bhutan","2":"1952","3":"-10"},{"1":"Bhutan","2":"1957","3":"-10"},{"1":"Bhutan","2":"1962","3":"-10"},{"1":"Bhutan","2":"1967","3":"-10"},{"1":"Bhutan","2":"1972","3":"-10"},{"1":"Bhutan","2":"1977","3":"-10"},{"1":"Bhutan","2":"1982","3":"-10"},{"1":"Bhutan","2":"1987","3":"-10"},{"1":"Bhutan","2":"1992","3":"-10"},{"1":"Bhutan","2":"1997","3":"-10"},{"1":"Bhutan","2":"2002","3":"-10"},{"1":"Bhutan","2":"2007","3":"-6"},{"1":"Bolivia","2":"1952","3":"-4"},{"1":"Bolivia","2":"1957","3":"-3"},{"1":"Bolivia","2":"1962","3":"-3"},{"1":"Bolivia","2":"1967","3":"-4"},{"1":"Bolivia","2":"1972","3":"-7"},{"1":"Bolivia","2":"1977","3":"-7"},{"1":"Bolivia","2":"1982","3":"8"},{"1":"Bolivia","2":"1987","3":"9"},{"1":"Bolivia","2":"1992","3":"9"},{"1":"Bolivia","2":"1997","3":"9"},{"1":"Bolivia","2":"2002","3":"9"},{"1":"Bolivia","2":"2007","3":"8"},{"1":"Brazil","2":"1952","3":"5"},{"1":"Brazil","2":"1957","3":"5"},{"1":"Brazil","2":"1962","3":"5"},{"1":"Brazil","2":"1967","3":"-9"},{"1":"Brazil","2":"1972","3":"-9"},{"1":"Brazil","2":"1977","3":"-4"},{"1":"Brazil","2":"1982","3":"-3"},{"1":"Brazil","2":"1987","3":"7"},{"1":"Brazil","2":"1992","3":"8"},{"1":"Brazil","2":"1997","3":"8"},{"1":"Brazil","2":"2002","3":"8"},{"1":"Brazil","2":"2007","3":"8"},{"1":"Bulgaria","2":"1952","3":"-7"},{"1":"Bulgaria","2":"1957","3":"-7"},{"1":"Bulgaria","2":"1962","3":"-7"},{"1":"Bulgaria","2":"1967","3":"-7"},{"1":"Bulgaria","2":"1972","3":"-7"},{"1":"Bulgaria","2":"1977","3":"-7"},{"1":"Bulgaria","2":"1982","3":"-7"},{"1":"Bulgaria","2":"1987","3":"-7"},{"1":"Bulgaria","2":"1992","3":"8"},{"1":"Bulgaria","2":"1997","3":"8"},{"1":"Bulgaria","2":"2002","3":"9"},{"1":"Bulgaria","2":"2007","3":"9"},{"1":"Canada","2":"1952","3":"10"},{"1":"Canada","2":"1957","3":"10"},{"1":"Canada","2":"1962","3":"10"},{"1":"Canada","2":"1967","3":"10"},{"1":"Canada","2":"1972","3":"10"},{"1":"Canada","2":"1977","3":"10"},{"1":"Canada","2":"1982","3":"10"},{"1":"Canada","2":"1987","3":"10"},{"1":"Canada","2":"1992","3":"10"},{"1":"Canada","2":"1997","3":"10"},{"1":"Canada","2":"2002","3":"10"},{"1":"Canada","2":"2007","3":"10"},{"1":"Chile","2":"1952","3":"2"},{"1":"Chile","2":"1957","3":"5"},{"1":"Chile","2":"1962","3":"5"},{"1":"Chile","2":"1967","3":"6"},{"1":"Chile","2":"1972","3":"6"},{"1":"Chile","2":"1977","3":"-7"},{"1":"Chile","2":"1982","3":"-7"},{"1":"Chile","2":"1987","3":"-6"},{"1":"Chile","2":"1992","3":"8"},{"1":"Chile","2":"1997","3":"8"},{"1":"Chile","2":"2002","3":"9"},{"1":"Chile","2":"2007","3":"10"},{"1":"China","2":"1952","3":"-8"},{"1":"China","2":"1957","3":"-8"},{"1":"China","2":"1962","3":"-8"},{"1":"China","2":"1967","3":"-9"},{"1":"China","2":"1972","3":"-8"},{"1":"China","2":"1977","3":"-7"},{"1":"China","2":"1982","3":"-7"},{"1":"China","2":"1987","3":"-7"},{"1":"China","2":"1992","3":"-7"},{"1":"China","2":"1997","3":"-7"},{"1":"China","2":"2002","3":"-7"},{"1":"China","2":"2007","3":"-7"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>更复杂的例子，来自https://epirhandbook.com/en/pivoting-data.html 看看下面这个例子</p>
+<p>前面的例子合并的列是相同类型的数据，比如都是数值。但我们也经常见到一些不同类型数据（multiple classes）的列合并，比如下面这个例子</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>dfmc <span class="ot">&lt;-</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tribble</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>     <span class="sc">~</span>id,   <span class="sc">~</span>obs1_date, <span class="sc">~</span>obs1_status,   <span class="sc">~</span>obs2_date, <span class="sc">~</span>obs2_status,   <span class="sc">~</span>obs3_date, <span class="sc">~</span>obs3_status,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>     <span class="st">"A"</span>, <span class="st">"2021-04-23"</span>,    <span class="st">"Healthy"</span>, <span class="st">"2021-04-24"</span>,    <span class="st">"Healthy"</span>, <span class="st">"2021-04-25"</span>,     <span class="st">"Unwell"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>     <span class="st">"B"</span>, <span class="st">"2021-04-23"</span>,    <span class="st">"Healthy"</span>, <span class="st">"2021-04-24"</span>,    <span class="st">"Healthy"</span>, <span class="st">"2021-04-25"</span>,    <span class="st">"Healthy"</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>     <span class="st">"C"</span>, <span class="st">"2021-04-23"</span>,    <span class="st">"Missing"</span>, <span class="st">"2021-04-24"</span>,    <span class="st">"Healthy"</span>, <span class="st">"2021-04-25"</span>,    <span class="st">"Healthy"</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>     ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>我们强行合并一下试试</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_longer</span>(dfmc,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">cols =</span> <span class="sc">-</span>id, <span class="co">#选择要改变的列</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"index"</span>), <span class="co">#变量名合并至新列</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">values_to =</span> <span class="st">"record"</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>             )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["index"],"name":[2],"type":["chr"],"align":["left"]},{"label":["record"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"A","2":"obs1_date","3":"2021-04-23"},{"1":"A","2":"obs1_status","3":"Healthy"},{"1":"A","2":"obs2_date","3":"2021-04-24"},{"1":"A","2":"obs2_status","3":"Healthy"},{"1":"A","2":"obs3_date","3":"2021-04-25"},{"1":"A","2":"obs3_status","3":"Unwell"},{"1":"B","2":"obs1_date","3":"2021-04-23"},{"1":"B","2":"obs1_status","3":"Healthy"},{"1":"B","2":"obs2_date","3":"2021-04-24"},{"1":"B","2":"obs2_status","3":"Healthy"},{"1":"B","2":"obs3_date","3":"2021-04-25"},{"1":"B","2":"obs3_status","3":"Healthy"},{"1":"C","2":"obs1_date","3":"2021-04-23"},{"1":"C","2":"obs1_status","3":"Missing"},{"1":"C","2":"obs2_date","3":"2021-04-24"},{"1":"C","2":"obs2_status","3":"Healthy"},{"1":"C","2":"obs3_date","3":"2021-04-25"},{"1":"C","2":"obs3_status","3":"Healthy"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>目前这数据肯定还不是tidydata，因为有的数据合并在同一个列里面了。我们可以尝试这样 这里的重点和难点是这个<code>.value</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>dfmcl <span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(dfmc,</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">cols =</span> <span class="sc">-</span>id, <span class="co">#选择要改变的列</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"obs"</span>,<span class="st">".value"</span>), <span class="co">#找到变量里面共同字符串"obs"，然后"_"后面的字符作为新变量名（".value"的作用）</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">names_sep =</span> <span class="st">"_"</span> <span class="co"># 变量分割"_"</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>             )</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>dfmcl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["obs"],"name":[2],"type":["chr"],"align":["left"]},{"label":["date"],"name":[3],"type":["chr"],"align":["left"]},{"label":["status"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"A","2":"obs1","3":"2021-04-23","4":"Healthy"},{"1":"A","2":"obs2","3":"2021-04-24","4":"Healthy"},{"1":"A","2":"obs3","3":"2021-04-25","4":"Unwell"},{"1":"B","2":"obs1","3":"2021-04-23","4":"Healthy"},{"1":"B","2":"obs2","3":"2021-04-24","4":"Healthy"},{"1":"B","2":"obs3","3":"2021-04-25","4":"Healthy"},{"1":"C","2":"obs1","3":"2021-04-23","4":"Missing"},{"1":"C","2":"obs2","3":"2021-04-24","4":"Healthy"},{"1":"C","2":"obs3","3":"2021-04-25","4":"Healthy"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>长数据变宽数据，就非常简单了，大家可以看看官方教程 https://tidyr.tidyverse.org/articles/pivot.html?q=.value#wider</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>留个作业，请把刚刚的dfmcl数据变成宽数据（wide data）</p>
+</div>
+</div>
 
 
 </section>

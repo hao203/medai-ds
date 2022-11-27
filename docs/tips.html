@@ -94,7 +94,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./references.html" rel="next">
-<link href="./04-data IO.html" rel="prev">
+<link href="./05-tidy_task.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -214,6 +214,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="./04-data IO.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data I/O</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-tidy_task.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据清洗</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item">
@@ -237,6 +242,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
   <li><a href="#管道操作" id="toc-管道操作" class="nav-link active" data-scroll-target="#管道操作">管道操作%&gt;%</a></li>
   <li><a href="#为什么要用quarto-或r-markdown" id="toc-为什么要用quarto-或r-markdown" class="nav-link" data-scroll-target="#为什么要用quarto-或r-markdown">为什么要用Quarto 或R Markdown</a></li>
+  <li><a href="#r的一些基础操作" id="toc-r的一些基础操作" class="nav-link" data-scroll-target="#r的一些基础操作">R的一些基础操作</a>
+  <ul class="collapse">
+  <li><a href="#r的工作目录" id="toc-r的工作目录" class="nav-link" data-scroll-target="#r的工作目录">R的工作目录</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -343,8 +352,74 @@ Note
 </section>
 <section id="为什么要用quarto-或r-markdown" class="level2">
 <h2 class="anchored" data-anchor-id="为什么要用quarto-或r-markdown">为什么要用Quarto 或R Markdown</h2>
+<p>Quarto 或 R Markdown 是学术写作的未来。因为他们既可以使用markdown语法，又可以运行代码，输出结果。R Markdown曾被认为是可以运行代码的Markdown。</p>
+<p>你可以试试。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars) <span class="co"># 可以运行代码，输出结果</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="tips_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>和</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars) <span class="co"># 只是代码，并不能运行，肯定也不能输出结果</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>这两种语句有什么不同。</p>
+</div>
+</div>
+<p>想了解更多，可以看看我在B站具体的解释。</p>
+<p>https://www.bilibili.com/video/BV1aP411A7TV/</p>
+<p>如何创建Quarto和R Markdown文件</p>
+<p>https://www.bilibili.com/video/BV14m4y1c7wM/</p>
+</section>
+<section id="r的一些基础操作" class="level2">
+<h2 class="anchored" data-anchor-id="r的一些基础操作">R的一些基础操作</h2>
+<section id="r的工作目录" class="level3">
+<h3 class="anchored" data-anchor-id="r的工作目录">R的工作目录</h3>
+<p>R的默认工作目录在所有操作系统里一般都是家目录里。可以先查看一下</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "/home/rsliang/Demo"</code></pre>
+</div>
+</div>
+<p>“/home/rsliang/Demo”，这是我的电脑上默认的工作目录。在这个目录下，你放了任何文件，都可以直接使用相对路径</p>
+<p>比如这时候你可以直接用相对路径调用数据集”dataset/***.csv”。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="st">"dataset/stroke.csv"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["doa"],"name":[1],"type":["chr"],"align":["left"]},{"label":["dod"],"name":[2],"type":["chr"],"align":["left"]},{"label":["status"],"name":[3],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[4],"type":["chr"],"align":["left"]},{"label":["dm"],"name":[5],"type":["chr"],"align":["left"]},{"label":["gcs"],"name":[6],"type":["int"],"align":["right"]},{"label":["sbp"],"name":[7],"type":["int"],"align":["right"]},{"label":["dbp"],"name":[8],"type":["int"],"align":["right"]},{"label":["wbc"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["time2"],"name":[10],"type":["int"],"align":["right"]},{"label":["stroke_type"],"name":[11],"type":["chr"],"align":["left"]},{"label":["referral_from"],"name":[12],"type":["chr"],"align":["left"]}],"data":[{"1":"17/2/2011","2":"18/2/2011","3":"alive","4":"male","5":"no","6":"15","7":"151","8":"73","9":"12.5","10":"1","11":"IS","12":"non-hospital","_rn_":"1"},{"1":"20/3/2011","2":"21/3/2011","3":"alive","4":"male","5":"no","6":"15","7":"196","8":"123","9":"8.1","10":"1","11":"IS","12":"non-hospital","_rn_":"2"},{"1":"9/4/2011","2":"10/4/2011","3":"dead","4":"female","5":"no","6":"11","7":"126","8":"78","9":"15.3","10":"1","11":"HS","12":"hospital","_rn_":"3"},{"1":"12/4/2011","2":"13/4/2011","3":"dead","4":"male","5":"no","6":"3","7":"170","8":"103","9":"13.9","10":"1","11":"IS","12":"hospital","_rn_":"4"},{"1":"12/4/2011","2":"13/4/2011","3":"alive","4":"female","5":"yes","6":"15","7":"103","8":"62","9":"14.7","10":"1","11":"IS","12":"non-hospital","_rn_":"5"},{"1":"4/5/2011","2":"5/5/2011","3":"dead","4":"female","5":"no","6":"3","7":"91","8":"55","9":"14.2","10":"1","11":"HS","12":"hospital","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>假设我的工作目录不是这里呢？比如我把工作目录换了，因为我这个目录下面没有dataset文件夹，更没有stroke.csv文件，所以自然会报错，无法执行。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"/home/rsliang/"</span>) <span class="co">#若设定工作目录为这个</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># read.csv("dataset/stroke.csv") 如果运行这条语句会报错</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>另外还有个办法，也比较有效，那就是打开R的项目（project）文件，后缀名为.Rproj的文件，打开以后，就默认这个所在的文件夹就是根目录，可以直接在右侧files选项卡，会显示当前项目的内容。</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/tips/project.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">project文件</figcaption><p></p>
+</figure>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -483,8 +558,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./04-data IO.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data I/O</span></span>
+      <a href="./05-tidy_task.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据清洗</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

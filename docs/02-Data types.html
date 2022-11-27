@@ -214,6 +214,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <a href="./04-data IO.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Data I/O</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-tidy_task.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据清洗</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item">
@@ -353,149 +358,49 @@ Warning
 <h3 data-number="2.1.3" class="anchored" data-anchor-id="再次理解rectangular-data"><span class="header-section-number">2.1.3</span> 再次理解Rectangular Data</h3>
 <p>统计分析中最常见的原始数据形式是类似于数据库表或Excel数据表的形式。 这样形式的数据在R中叫做数据框(data.frame)。 数据框类似于一个矩阵，有行、列， 但各列允许有不同类型：数值型、因子、字符、日期时间等。 同一列的数据类型一般是相同的。 还是以esoph这个数据对象为例。</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(esoph) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
-<caption>data.frame 表</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;">agegp</th>
-<th style="text-align: left;">alcgp</th>
-<th style="text-align: left;">tobgp</th>
-<th style="text-align: right;">ncases</th>
-<th style="text-align: right;">ncontrols</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">25-34</td>
-<td style="text-align: left;">0-39g/day</td>
-<td style="text-align: left;">0-9g/day</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">40</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">25-34</td>
-<td style="text-align: left;">0-39g/day</td>
-<td style="text-align: left;">10-19</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">10</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">25-34</td>
-<td style="text-align: left;">0-39g/day</td>
-<td style="text-align: left;">20-29</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">6</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">25-34</td>
-<td style="text-align: left;">0-39g/day</td>
-<td style="text-align: left;">30+</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">5</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">25-34</td>
-<td style="text-align: left;">40-79</td>
-<td style="text-align: left;">0-9g/day</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">27</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">25-34</td>
-<td style="text-align: left;">40-79</td>
-<td style="text-align: left;">10-19</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">7</td>
-</tr>
-</tbody>
-</table>
+
+<div data-pagedtable="false"> <div class="table-caption">data.frame 表</div>
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["agegp"],"name":[1],"type":["ord"],"align":["right"]},{"label":["alcgp"],"name":[2],"type":["ord"],"align":["right"]},{"label":["tobgp"],"name":[3],"type":["ord"],"align":["right"]},{"label":["ncases"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["ncontrols"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"25-34","2":"0-39g/day","3":"0-9g/day","4":"0","5":"40","_rn_":"1"},{"1":"25-34","2":"0-39g/day","3":"10-19","4":"0","5":"10","_rn_":"2"},{"1":"25-34","2":"0-39g/day","3":"20-29","4":"0","5":"6","_rn_":"3"},{"1":"25-34","2":"0-39g/day","3":"30+","4":"0","5":"5","_rn_":"4"},{"1":"25-34","2":"40-79","3":"0-9g/day","4":"0","5":"27","_rn_":"5"},{"1":"25-34","2":"40-79","3":"10-19","4":"0","5":"7","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 </div>
 <p>我们查看一下它的类型</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(esoph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(esoph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "data.frame"</code></pre>
 </div>
 </div>
 <p>我们把它转化成其他的表格对象</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(esoph) <span class="sc">%&gt;%</span> <span class="co">#转化成tibble对象</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">class</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(esoph) <span class="sc">%&gt;%</span> <span class="co">#转化成tibble对象</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">class</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "tbl_df"     "tbl"        "data.frame"</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.table</span>(esoph) <span class="sc">%&gt;%</span> <span class="co">#转化成data.table对象</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">class</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.table</span>(esoph) <span class="sc">%&gt;%</span> <span class="co">#转化成data.table对象</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">class</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "data.table" "data.frame"</code></pre>
 </div>
 </div>
 <p>看上去，他们并没有区别，但在后面具体的操作上，会有一些差别，后面具体实践，我们再去理解。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.table</span>(esoph) <span class="sc">%&gt;%</span> <span class="co">#输出data.table</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"data.table 表"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.table</span>(esoph) <span class="sc">%&gt;%</span> <span class="co">#输出data.table</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
-<caption>data.table 表</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;">agegp</th>
-<th style="text-align: left;">alcgp</th>
-<th style="text-align: left;">tobgp</th>
-<th style="text-align: right;">ncases</th>
-<th style="text-align: right;">ncontrols</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">25-34</td>
-<td style="text-align: left;">0-39g/day</td>
-<td style="text-align: left;">0-9g/day</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">40</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">25-34</td>
-<td style="text-align: left;">0-39g/day</td>
-<td style="text-align: left;">10-19</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">10</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">25-34</td>
-<td style="text-align: left;">0-39g/day</td>
-<td style="text-align: left;">20-29</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">6</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">25-34</td>
-<td style="text-align: left;">0-39g/day</td>
-<td style="text-align: left;">30+</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">5</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">25-34</td>
-<td style="text-align: left;">40-79</td>
-<td style="text-align: left;">0-9g/day</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">27</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">25-34</td>
-<td style="text-align: left;">40-79</td>
-<td style="text-align: left;">10-19</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">7</td>
-</tr>
-</tbody>
-</table>
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["agegp"],"name":[1],"type":["ord"],"align":["right"]},{"label":["alcgp"],"name":[2],"type":["ord"],"align":["right"]},{"label":["tobgp"],"name":[3],"type":["ord"],"align":["right"]},{"label":["ncases"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["ncontrols"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"25-34","2":"0-39g/day","3":"0-9g/day","4":"0","5":"40"},{"1":"25-34","2":"0-39g/day","3":"10-19","4":"0","5":"10"},{"1":"25-34","2":"0-39g/day","3":"20-29","4":"0","5":"6"},{"1":"25-34","2":"0-39g/day","3":"30+","4":"0","5":"5"},{"1":"25-34","2":"40-79","3":"0-9g/day","4":"0","5":"27"},{"1":"25-34","2":"40-79","3":"10-19","4":"0","5":"7"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 </div>
 </section>
@@ -513,7 +418,7 @@ Warning
 </ul>
 <p>我们可以看看，这个表格中每个列都是什么类型的数据。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(esoph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(esoph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>'data.frame':   88 obs. of  5 variables:
  $ agegp    : Ord.factor w/ 6 levels "25-34"&lt;"35-44"&lt;..: 1 1 1 1 1 1 1 1 1 1 ...
@@ -528,8 +433,8 @@ Warning
 <p><a href="https://www.rforecology.com/post/data-types-in-r/">R Data types 101, or What kind of data do I have? | R (for ecology)</a></p>
 <p>数据类型也像数据结构那样，可以转变的，比如，我们把表格中<code>alcgp</code>这一列转化成<code>character</code>。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>esoph<span class="sc">$</span>alcgp <span class="ot">&lt;-</span>  <span class="fu">as.character</span>(esoph<span class="sc">$</span>alcgp)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(esoph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>esoph<span class="sc">$</span>alcgp <span class="ot">&lt;-</span>  <span class="fu">as.character</span>(esoph<span class="sc">$</span>alcgp)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(esoph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>'data.frame':   88 obs. of  5 variables:
  $ agegp    : Ord.factor w/ 6 levels "25-34"&lt;"35-44"&lt;..: 1 1 1 1 1 1 1 1 1 1 ...

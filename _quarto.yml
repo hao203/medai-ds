@@ -28,12 +28,12 @@ format:
     df-print: paged
   pdf:
     documentclass: scrreprt
-    df-print: default
+    df-print: kable
     include-in-header: 
       text: |
         \usepackage{ctex}
 execute:
-  echo: false
+  echo: true
   warning: false
 editor: source
 

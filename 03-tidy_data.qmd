@@ -79,7 +79,7 @@ observation也有很多同义词，如case, example, instance, record, pattern, 
 其实这个第三条，可以不要，因为行和列就可以确定一个坐标，也就是一个单元格，行和列没有问题，单元格也就不会有问题。 这里的问题主要出现在单元格里数据格式不统一，如，下表alcgp列有些加了g/day，，有些没有。
 
 ```{r}
-esoph
+head(esoph,15)
 ```
 
 ## 烂数据长啥样？

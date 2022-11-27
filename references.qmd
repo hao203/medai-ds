@@ -1,4 +1,5 @@
 # References {.unnumbered}
 
 ::: {#refs}
+Batra, Neale, et al. The Epidemiologist R Handbook. 2021.
 :::

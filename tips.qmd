@@ -71,5 +71,63 @@ rnorm(1000) %>%
 ::: callout-note
 magrittr包，主要定义了4个管道操作符，分另是%>%, %T>%, %$% 和 %<>%。其中，操作符%>%是最常用的，其他3个操作符，与%>%类似，在特殊的使用场景会起到更好的作用。请大家自学
 :::
+
 ## 为什么要用Quarto 或R Markdown
 
+Quarto 或 R Markdown 是学术写作的未来。因为他们既可以使用markdown语法，又可以运行代码，输出结果。R Markdown曾被认为是可以运行代码的Markdown。
+
+你可以试试。
+
+```{r}
+#| echo: true
+
+plot(cars) # 可以运行代码，输出结果
+```
+
+和
+
+``` r
+plot(cars) # 只是代码，并不能运行，肯定也不能输出结果
+```
+::: callout-warning
+这两种语句有什么不同。
+:::
+
+想了解更多，可以看看我在B站具体的解释。
+
+https://www.bilibili.com/video/BV1aP411A7TV/
+
+如何创建Quarto和R Markdown文件
+
+https://www.bilibili.com/video/BV14m4y1c7wM/
+
+## R的一些基础操作
+
+### R的工作目录
+
+R的默认工作目录在所有操作系统里一般都是家目录里。可以先查看一下
+
+```{r}
+#| echo: true
+getwd()
+```
+
+"/home/rsliang/Demo"，这是我的电脑上默认的工作目录。在这个目录下，你放了任何文件，都可以直接使用相对路径
+
+比如这时候你可以直接用相对路径调用数据集"dataset/***.csv"。
+
+```{r}
+read.csv("dataset/stroke.csv") %>% 
+  head()
+```
+
+假设我的工作目录不是这里呢？比如我把工作目录换了，因为我这个目录下面没有dataset文件夹，更没有stroke.csv文件，所以自然会报错，无法执行。
+
+```{r}
+setwd("/home/rsliang/") #若设定工作目录为这个
+# read.csv("dataset/stroke.csv") 如果运行这条语句会报错
+```
+
+另外还有个办法，也比较有效，那就是打开R的项目（project）文件，后缀名为.Rproj的文件，打开以后，就默认这个所在的文件夹就是根目录，可以直接在右侧files选项卡，会显示当前项目的内容。
+
+![project文件](image/tips/project.png)
