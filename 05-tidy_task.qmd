@@ -524,4 +524,7 @@ str(stroke_fac$status)
 
 ![病人情况](image/05/levels.png)
 
+大家还可以浏览[R语言中的"因子"变量类型](https://blog.csdn.net/zhangxiaojiakele/article/details/80117602)去查看更多。
+
+## 清除重复和空值 
 
