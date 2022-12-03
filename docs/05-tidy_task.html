@@ -250,6 +250,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#数据变形-tidyr" id="toc-数据变形-tidyr" class="nav-link" data-scroll-target="#数据变形-tidyr"><span class="toc-section-number">5.3</span>  数据变形 tidyr</a>
   <ul class="collapse">
   <li><a href="#长宽数据转换" id="toc-长宽数据转换" class="nav-link" data-scroll-target="#长宽数据转换"><span class="toc-section-number">5.3.1</span>  长宽数据转换</a></li>
+  <li><a href="#拆分列" id="toc-拆分列" class="nav-link" data-scroll-target="#拆分列"><span class="toc-section-number">5.3.2</span>  拆分列</a></li>
+  </ul></li>
+  <li><a href="#数据归一" id="toc-数据归一" class="nav-link" data-scroll-target="#数据归一"><span class="toc-section-number">5.4</span>  数据归一</a>
+  <ul class="collapse">
+  <li><a href="#日期数据" id="toc-日期数据" class="nav-link" data-scroll-target="#日期数据"><span class="toc-section-number">5.4.1</span>  日期数据</a></li>
+  <li><a href="#字符数据" id="toc-字符数据" class="nav-link" data-scroll-target="#字符数据"><span class="toc-section-number">5.4.2</span>  字符数据</a></li>
+  <li><a href="#因子数据" id="toc-因子数据" class="nav-link" data-scroll-target="#因子数据"><span class="toc-section-number">5.4.3</span>  因子数据</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -564,10 +571,24 @@ $ referral_from &lt;chr&gt; "non-hospital", "non-hospital", "hospital", "non-hos
 <h3 data-number="5.3.1" class="anchored" data-anchor-id="长宽数据转换"><span class="header-section-number">5.3.1</span> 长宽数据转换</h3>
 <p>Reshaping Data from Wide (Fat) to Long (Tall)</p>
 <p>宽数据变长数据</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/05/pivot_longer_new.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">示例（The Epidemiologist R Handbook）</figcaption><p></p>
+</figure>
+</div>
 <p>首先来看看什么是宽数据。</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pwide <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"dataset/pwide.csv"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pwide <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"dataset/pwide.csv"</span>) </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pwide)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["X1952"],"name":[2],"type":["int"],"align":["right"]},{"label":["X1957"],"name":[3],"type":["int"],"align":["right"]},{"label":["X1962"],"name":[4],"type":["int"],"align":["right"]},{"label":["X1967"],"name":[5],"type":["int"],"align":["right"]},{"label":["X1972"],"name":[6],"type":["int"],"align":["right"]},{"label":["X1977"],"name":[7],"type":["int"],"align":["right"]},{"label":["X1982"],"name":[8],"type":["int"],"align":["right"]},{"label":["X1987"],"name":[9],"type":["int"],"align":["right"]},{"label":["X1992"],"name":[10],"type":["int"],"align":["right"]},{"label":["X1997"],"name":[11],"type":["int"],"align":["right"]},{"label":["X2002"],"name":[12],"type":["int"],"align":["right"]},{"label":["X2007"],"name":[13],"type":["int"],"align":["right"]}],"data":[{"1":"Albania","2":"-9","3":"-9","4":"-9","5":"-9","6":"-9","7":"-9","8":"-9","9":"-9","10":"5","11":"5","12":"7","13":"9","_rn_":"1"},{"1":"Argentina","2":"-9","3":"-1","4":"-1","5":"-9","6":"-9","7":"-9","8":"-8","9":"8","10":"7","11":"7","12":"8","13":"8","_rn_":"2"},{"1":"Armenia","2":"-9","3":"-7","4":"-7","5":"-7","6":"-7","7":"-7","8":"-7","9":"-7","10":"7","11":"-6","12":"5","13":"5","_rn_":"3"},{"1":"Australia","2":"10","3":"10","4":"10","5":"10","6":"10","7":"10","8":"10","9":"10","10":"10","11":"10","12":"10","13":"10","_rn_":"4"},{"1":"Austria","2":"10","3":"10","4":"10","5":"10","6":"10","7":"10","8":"10","9":"10","10":"10","11":"10","12":"10","13":"10","_rn_":"5"},{"1":"Azerbaijan","2":"-9","3":"-7","4":"-7","5":"-7","6":"-7","7":"-7","8":"-7","9":"-7","10":"1","11":"-6","12":"-7","13":"-7","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
 </div>
 <p>这个数据来自<a href="https://www.gapminder.org/data/">Gapminder</a>。代表每个国家每年的民主指数。</p>
 <p>我们看到，这个表格是把年作为了列名，但其实，我们需要的是年作为变量（variable），然后具体的年份作为数值，存入该变量。只需要一个tidyr包的<code>pivot_longer</code>命令即可。这样就符合整洁数据的要求。</p>
@@ -576,12 +597,13 @@ $ referral_from &lt;chr&gt; "non-hospital", "non-hospital", "hospital", "non-hos
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">cols =</span> <span class="sc">!</span>country, <span class="co">#选择要改变的列</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">names_to =</span> <span class="st">"year"</span>, <span class="co">#变量名合并至新列</span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">values_to =</span> <span class="st">"score"</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>             )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>             ) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["year"],"name":[2],"type":["chr"],"align":["left"]},{"label":["score"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Albania","2":"1952","3":"-9"},{"1":"Albania","2":"1957","3":"-9"},{"1":"Albania","2":"1962","3":"-9"},{"1":"Albania","2":"1967","3":"-9"},{"1":"Albania","2":"1972","3":"-9"},{"1":"Albania","2":"1977","3":"-9"},{"1":"Albania","2":"1982","3":"-9"},{"1":"Albania","2":"1987","3":"-9"},{"1":"Albania","2":"1992","3":"5"},{"1":"Albania","2":"1997","3":"5"},{"1":"Albania","2":"2002","3":"7"},{"1":"Albania","2":"2007","3":"9"},{"1":"Argentina","2":"1952","3":"-9"},{"1":"Argentina","2":"1957","3":"-1"},{"1":"Argentina","2":"1962","3":"-1"},{"1":"Argentina","2":"1967","3":"-9"},{"1":"Argentina","2":"1972","3":"-9"},{"1":"Argentina","2":"1977","3":"-9"},{"1":"Argentina","2":"1982","3":"-8"},{"1":"Argentina","2":"1987","3":"8"},{"1":"Argentina","2":"1992","3":"7"},{"1":"Argentina","2":"1997","3":"7"},{"1":"Argentina","2":"2002","3":"8"},{"1":"Argentina","2":"2007","3":"8"},{"1":"Armenia","2":"1952","3":"-9"},{"1":"Armenia","2":"1957","3":"-7"},{"1":"Armenia","2":"1962","3":"-7"},{"1":"Armenia","2":"1967","3":"-7"},{"1":"Armenia","2":"1972","3":"-7"},{"1":"Armenia","2":"1977","3":"-7"},{"1":"Armenia","2":"1982","3":"-7"},{"1":"Armenia","2":"1987","3":"-7"},{"1":"Armenia","2":"1992","3":"7"},{"1":"Armenia","2":"1997","3":"-6"},{"1":"Armenia","2":"2002","3":"5"},{"1":"Armenia","2":"2007","3":"5"},{"1":"Australia","2":"1952","3":"10"},{"1":"Australia","2":"1957","3":"10"},{"1":"Australia","2":"1962","3":"10"},{"1":"Australia","2":"1967","3":"10"},{"1":"Australia","2":"1972","3":"10"},{"1":"Australia","2":"1977","3":"10"},{"1":"Australia","2":"1982","3":"10"},{"1":"Australia","2":"1987","3":"10"},{"1":"Australia","2":"1992","3":"10"},{"1":"Australia","2":"1997","3":"10"},{"1":"Australia","2":"2002","3":"10"},{"1":"Australia","2":"2007","3":"10"},{"1":"Austria","2":"1952","3":"10"},{"1":"Austria","2":"1957","3":"10"},{"1":"Austria","2":"1962","3":"10"},{"1":"Austria","2":"1967","3":"10"},{"1":"Austria","2":"1972","3":"10"},{"1":"Austria","2":"1977","3":"10"},{"1":"Austria","2":"1982","3":"10"},{"1":"Austria","2":"1987","3":"10"},{"1":"Austria","2":"1992","3":"10"},{"1":"Austria","2":"1997","3":"10"},{"1":"Austria","2":"2002","3":"10"},{"1":"Austria","2":"2007","3":"10"},{"1":"Azerbaijan","2":"1952","3":"-9"},{"1":"Azerbaijan","2":"1957","3":"-7"},{"1":"Azerbaijan","2":"1962","3":"-7"},{"1":"Azerbaijan","2":"1967","3":"-7"},{"1":"Azerbaijan","2":"1972","3":"-7"},{"1":"Azerbaijan","2":"1977","3":"-7"},{"1":"Azerbaijan","2":"1982","3":"-7"},{"1":"Azerbaijan","2":"1987","3":"-7"},{"1":"Azerbaijan","2":"1992","3":"1"},{"1":"Azerbaijan","2":"1997","3":"-6"},{"1":"Azerbaijan","2":"2002","3":"-7"},{"1":"Azerbaijan","2":"2007","3":"-7"},{"1":"Belarus","2":"1952","3":"-9"},{"1":"Belarus","2":"1957","3":"-7"},{"1":"Belarus","2":"1962","3":"-7"},{"1":"Belarus","2":"1967","3":"-7"},{"1":"Belarus","2":"1972","3":"-7"},{"1":"Belarus","2":"1977","3":"-7"},{"1":"Belarus","2":"1982","3":"-7"},{"1":"Belarus","2":"1987","3":"-7"},{"1":"Belarus","2":"1992","3":"7"},{"1":"Belarus","2":"1997","3":"-7"},{"1":"Belarus","2":"2002","3":"-7"},{"1":"Belarus","2":"2007","3":"-7"},{"1":"Belgium","2":"1952","3":"10"},{"1":"Belgium","2":"1957","3":"10"},{"1":"Belgium","2":"1962","3":"10"},{"1":"Belgium","2":"1967","3":"10"},{"1":"Belgium","2":"1972","3":"10"},{"1":"Belgium","2":"1977","3":"10"},{"1":"Belgium","2":"1982","3":"10"},{"1":"Belgium","2":"1987","3":"10"},{"1":"Belgium","2":"1992","3":"10"},{"1":"Belgium","2":"1997","3":"10"},{"1":"Belgium","2":"2002","3":"10"},{"1":"Belgium","2":"2007","3":"8"},{"1":"Bhutan","2":"1952","3":"-10"},{"1":"Bhutan","2":"1957","3":"-10"},{"1":"Bhutan","2":"1962","3":"-10"},{"1":"Bhutan","2":"1967","3":"-10"},{"1":"Bhutan","2":"1972","3":"-10"},{"1":"Bhutan","2":"1977","3":"-10"},{"1":"Bhutan","2":"1982","3":"-10"},{"1":"Bhutan","2":"1987","3":"-10"},{"1":"Bhutan","2":"1992","3":"-10"},{"1":"Bhutan","2":"1997","3":"-10"},{"1":"Bhutan","2":"2002","3":"-10"},{"1":"Bhutan","2":"2007","3":"-6"},{"1":"Bolivia","2":"1952","3":"-4"},{"1":"Bolivia","2":"1957","3":"-3"},{"1":"Bolivia","2":"1962","3":"-3"},{"1":"Bolivia","2":"1967","3":"-4"},{"1":"Bolivia","2":"1972","3":"-7"},{"1":"Bolivia","2":"1977","3":"-7"},{"1":"Bolivia","2":"1982","3":"8"},{"1":"Bolivia","2":"1987","3":"9"},{"1":"Bolivia","2":"1992","3":"9"},{"1":"Bolivia","2":"1997","3":"9"},{"1":"Bolivia","2":"2002","3":"9"},{"1":"Bolivia","2":"2007","3":"8"},{"1":"Brazil","2":"1952","3":"5"},{"1":"Brazil","2":"1957","3":"5"},{"1":"Brazil","2":"1962","3":"5"},{"1":"Brazil","2":"1967","3":"-9"},{"1":"Brazil","2":"1972","3":"-9"},{"1":"Brazil","2":"1977","3":"-4"},{"1":"Brazil","2":"1982","3":"-3"},{"1":"Brazil","2":"1987","3":"7"},{"1":"Brazil","2":"1992","3":"8"},{"1":"Brazil","2":"1997","3":"8"},{"1":"Brazil","2":"2002","3":"8"},{"1":"Brazil","2":"2007","3":"8"},{"1":"Bulgaria","2":"1952","3":"-7"},{"1":"Bulgaria","2":"1957","3":"-7"},{"1":"Bulgaria","2":"1962","3":"-7"},{"1":"Bulgaria","2":"1967","3":"-7"},{"1":"Bulgaria","2":"1972","3":"-7"},{"1":"Bulgaria","2":"1977","3":"-7"},{"1":"Bulgaria","2":"1982","3":"-7"},{"1":"Bulgaria","2":"1987","3":"-7"},{"1":"Bulgaria","2":"1992","3":"8"},{"1":"Bulgaria","2":"1997","3":"8"},{"1":"Bulgaria","2":"2002","3":"9"},{"1":"Bulgaria","2":"2007","3":"9"},{"1":"Canada","2":"1952","3":"10"},{"1":"Canada","2":"1957","3":"10"},{"1":"Canada","2":"1962","3":"10"},{"1":"Canada","2":"1967","3":"10"},{"1":"Canada","2":"1972","3":"10"},{"1":"Canada","2":"1977","3":"10"},{"1":"Canada","2":"1982","3":"10"},{"1":"Canada","2":"1987","3":"10"},{"1":"Canada","2":"1992","3":"10"},{"1":"Canada","2":"1997","3":"10"},{"1":"Canada","2":"2002","3":"10"},{"1":"Canada","2":"2007","3":"10"},{"1":"Chile","2":"1952","3":"2"},{"1":"Chile","2":"1957","3":"5"},{"1":"Chile","2":"1962","3":"5"},{"1":"Chile","2":"1967","3":"6"},{"1":"Chile","2":"1972","3":"6"},{"1":"Chile","2":"1977","3":"-7"},{"1":"Chile","2":"1982","3":"-7"},{"1":"Chile","2":"1987","3":"-6"},{"1":"Chile","2":"1992","3":"8"},{"1":"Chile","2":"1997","3":"8"},{"1":"Chile","2":"2002","3":"9"},{"1":"Chile","2":"2007","3":"10"},{"1":"China","2":"1952","3":"-8"},{"1":"China","2":"1957","3":"-8"},{"1":"China","2":"1962","3":"-8"},{"1":"China","2":"1967","3":"-9"},{"1":"China","2":"1972","3":"-8"},{"1":"China","2":"1977","3":"-7"},{"1":"China","2":"1982","3":"-7"},{"1":"China","2":"1987","3":"-7"},{"1":"China","2":"1992","3":"-7"},{"1":"China","2":"1997","3":"-7"},{"1":"China","2":"2002","3":"-7"},{"1":"China","2":"2007","3":"-7"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["year"],"name":[2],"type":["chr"],"align":["left"]},{"label":["score"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"Albania","2":"X1952","3":"-9"},{"1":"Albania","2":"X1957","3":"-9"},{"1":"Albania","2":"X1962","3":"-9"},{"1":"Albania","2":"X1967","3":"-9"},{"1":"Albania","2":"X1972","3":"-9"},{"1":"Albania","2":"X1977","3":"-9"},{"1":"Albania","2":"X1982","3":"-9"},{"1":"Albania","2":"X1987","3":"-9"},{"1":"Albania","2":"X1992","3":"5"},{"1":"Albania","2":"X1997","3":"5"},{"1":"Albania","2":"X2002","3":"7"},{"1":"Albania","2":"X2007","3":"9"},{"1":"Argentina","2":"X1952","3":"-9"},{"1":"Argentina","2":"X1957","3":"-1"},{"1":"Argentina","2":"X1962","3":"-1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -641,9 +663,216 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>留个作业，请把刚刚的dfmcl数据变成宽数据（wide data）</p>
+<p>留个作业，请把刚刚的dfmcl数据，obs这个列拆分，变成宽数据（wide data）。</p>
 </div>
 </div>
+</section>
+<section id="拆分列" class="level3" data-number="5.3.2">
+<h3 data-number="5.3.2" class="anchored" data-anchor-id="拆分列"><span class="header-section-number">5.3.2</span> 拆分列</h3>
+<p>之前我们曾经看到过这样的数据，将不同的变量合并到了一列。如下，_f和_m分别代表女和男，性别。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.csv</span>(<span class="st">"dataset/heartrate2.csv"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["patient"],"name":[1],"type":["chr"],"align":["left"]},{"label":["a"],"name":[2],"type":["int"],"align":["right"]},{"label":["b"],"name":[3],"type":["int"],"align":["right"]},{"label":["c"],"name":[4],"type":["int"],"align":["right"]},{"label":["d"],"name":[5],"type":["int"],"align":["right"]}],"data":[{"1":"Margaret_f","2":"72","3":"74","4":"80","5":"68"},{"1":"Frank_m","2":"84","3":"84","4":"88","5":"76"},{"1":"Hawkeye_m","2":"64","3":"66","4":"68","5":"64"},{"1":"Trapper_m","2":"60","3":"58","4":"64","5":"58"},{"1":"Radar_m","2":"74","3":"72","4":"78","5":"70"},{"1":"Henry_m","2":"88","3":"87","4":"88","5":"72"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>下面我们仍然可以采用tidyr的 separate命令来拆分</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>heartrate2 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"dataset/heartrate2.csv"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(patient, <span class="at">into=</span> <span class="fu">c</span>(<span class="st">"patient"</span>, <span class="st">"sex"</span>), <span class="at">sep =</span> <span class="st">"_"</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>heartrate2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["patient"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sex"],"name":[2],"type":["chr"],"align":["left"]},{"label":["a"],"name":[3],"type":["int"],"align":["right"]},{"label":["b"],"name":[4],"type":["int"],"align":["right"]},{"label":["c"],"name":[5],"type":["int"],"align":["right"]},{"label":["d"],"name":[6],"type":["int"],"align":["right"]}],"data":[{"1":"Margaret","2":"f","3":"72","4":"74","5":"80","6":"68"},{"1":"Frank","2":"m","3":"84","4":"84","5":"88","6":"76"},{"1":"Hawkeye","2":"m","3":"64","4":"66","5":"68","6":"64"},{"1":"Trapper","2":"m","3":"60","4":"58","5":"64","6":"58"},{"1":"Radar","2":"m","3":"74","4":"72","5":"78","6":"70"},{"1":"Henry","2":"m","3":"88","4":"87","5":"88","6":"72"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="数据归一" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="数据归一"><span class="header-section-number">5.4</span> 数据归一</h2>
+<section id="日期数据" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="日期数据"><span class="header-section-number">5.4.1</span> 日期数据</h3>
+<p>R日期可以保存为Date类型， 一般用整数保存，默认数值为从1970-1-1经过的天数。</p>
+<p>R中用一种叫做POSIXct和POSIXlt的特殊数据类型保存日期和时间， 可以仅包含日期部分，也可以同时有日期和时间。 基础的R包已包含了部分日期和时间操作功能。用as.Date()、as.POSIXct()等函数生成日期型和日期时间型。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.Date</span>(<span class="st">"1970-01-01"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "1970-01-01"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(<span class="fu">as.Date</span>(<span class="st">"1970-01-01"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.Date</span>(<span class="dv">1255</span>, <span class="at">origin =</span> <span class="st">"1900-01-01"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "1903-06-10"</code></pre>
+</div>
+</div>
+<p>注意，平时我们在读取数据后，日期和时间默认都是文本类型，可以看看我们前面的stroke数据。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(stroke) <span class="co"># doa和dod的数据类型都是&lt;chr&gt;文本。</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 213
+Columns: 12
+$ doa           &lt;chr&gt; "17/2/2011", "20/3/2011", "9/4/2011", "12/4/2011", "12/4…
+$ dod           &lt;chr&gt; "18/2/2011", "21/3/2011", "10/4/2011", "13/4/2011", "13/…
+$ status        &lt;chr&gt; "alive", "alive", "dead", "dead", "alive", "dead", "aliv…
+$ sex           &lt;chr&gt; "male", "male", "female", "male", "female", "female", "m…
+$ dm            &lt;chr&gt; "no", "no", "no", "no", "yes", "no", "no", "yes", "yes",…
+$ gcs           &lt;int&gt; 15, 15, 11, 3, 15, 3, 11, 15, 6, 15, 15, 4, 4, 10, 12, 1…
+$ sbp           &lt;int&gt; 151, 196, 126, 170, 103, 91, 171, 106, 170, 123, 144, 23…
+$ dbp           &lt;int&gt; 73, 123, 78, 103, 62, 55, 80, 67, 90, 83, 89, 120, 120, …
+$ wbc           &lt;dbl&gt; 12.5, 8.1, 15.3, 13.9, 14.7, 14.2, 8.7, 5.5, 10.5, 7.2, …
+$ time2         &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ stroke_type   &lt;chr&gt; "IS", "IS", "HS", "IS", "IS", "HS", "IS", "IS", "HS", "I…
+$ referral_from &lt;chr&gt; "non-hospital", "non-hospital", "hospital", "hospital", …</code></pre>
+</div>
+</div>
+<p>我们来转换一下，这时候我们可以用到一个专门处理日期和时间的包<em>lubridate</em>。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>stroke <span class="ot">&lt;-</span> stroke <span class="sc">%&gt;%</span> </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">doa =</span> <span class="fu">as_date</span>(doa), <span class="at">dod =</span> <span class="fu">dmy</span>(dod)) <span class="sc">%&gt;%</span> <span class="co"># as_date()函数必须对应年/月/日格式</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 213
+Columns: 12
+$ doa           &lt;date&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ dod           &lt;date&gt; 2011-02-18, 2011-03-21, 2011-04-10, 2011-04-13, 2011-04…
+$ status        &lt;chr&gt; "alive", "alive", "dead", "dead", "alive", "dead", "aliv…
+$ sex           &lt;chr&gt; "male", "male", "female", "male", "female", "female", "m…
+$ dm            &lt;chr&gt; "no", "no", "no", "no", "yes", "no", "no", "yes", "yes",…
+$ gcs           &lt;int&gt; 15, 15, 11, 3, 15, 3, 11, 15, 6, 15, 15, 4, 4, 10, 12, 1…
+$ sbp           &lt;int&gt; 151, 196, 126, 170, 103, 91, 171, 106, 170, 123, 144, 23…
+$ dbp           &lt;int&gt; 73, 123, 78, 103, 62, 55, 80, 67, 90, 83, 89, 120, 120, …
+$ wbc           &lt;dbl&gt; 12.5, 8.1, 15.3, 13.9, 14.7, 14.2, 8.7, 5.5, 10.5, 7.2, …
+$ time2         &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ stroke_type   &lt;chr&gt; "IS", "IS", "HS", "IS", "IS", "HS", "IS", "IS", "HS", "I…
+$ referral_from &lt;chr&gt; "non-hospital", "non-hospital", "hospital", "hospital", …</code></pre>
+</div>
+</div>
+<p>在年号只有两位数字时，默认对应到1969-2068范围。 如，</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as_date</span>(<span class="st">"70-01-01"</span>) <span class="co">#</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "1970-01-01"</code></pre>
+</div>
+</div>
+<p>对于日期数据很不规整的，一团糟的，我们还可以用parsedate这个包的<code>parse_date</code>函数来进行归一化。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>parsedate<span class="sc">::</span><span class="fu">parse_date</span>(<span class="fu">c</span>(<span class="st">"03 January 2018"</span>,</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"07/03/1982"</span>,</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"08/20/85"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2018-01-03 UTC" "1982-07-03 UTC" "1985-08-20 UTC"</code></pre>
+</div>
+</div>
+<p>其他还有很多函数，我就不再一一介绍了，更多的用法，可以访问</p>
+<p><a href="https://www.math.pku.edu.cn/teachers/lidf/docs/Rbook/html/_Rbook/prog-type-date.html">R日期时间</a>或官方文档<a href="https://lubridate.tidyverse.org/index.html">Make Dealing with Dates a Little Easier • lubridate</a>。</p>
+<p>我们为什么对日期规范要求严格，只有这样才能实现日期或时间之间的运算。</p>
+<p>lubridate还有一些对时间段类型数据进行规整的方法和数据类型。</p>
+<ul>
+<li>durations are time spans in exact numbers of seconds</li>
+<li>periods are time spans in human units (e.g., days, months, years)</li>
+<li>intervals are time spans with a given start and end point in time</li>
+</ul>
+<p>具体来说<em>duration</em>数据和<em>interval</em>数据都是精确到秒的，都是两个具体时间之间以秒来计算的时间段。不同的是<em>interval</em>必须有起止时间。period这个时间段更像人话，因为用秒去计算的话，人读起来太难受，但有个问题，period有时候并不是固定的，比如每个月天数不一样，如果说一月一次为周期，那肯定间隔时间不恒定。</p>
+<p>下面我们以一个例子来理解这三个数据类型。案例来源<a href="https://bookdown.org/hneth/ds4psy/10-3-time-lubridate.html">time-lubridate</a></p>
+<p>美东时间2001年9月11日，星期二，上午08:46，“基地”组织五名劫机者劫持一架美国航空公司的飞机撞向了纽约市世贸中心的北面。这就是著名的911事件。</p>
+<p>我们讨论的第一个问题是，该时间离现在到底有多久了？</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>tm_911 <span class="ot">&lt;-</span> <span class="fu">ymd_hm</span>(<span class="st">"2001 September 11, 8:46"</span>, <span class="at">tz =</span> <span class="st">"US/Eastern"</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>tm_now <span class="ot">&lt;-</span> <span class="fu">now</span>()  <span class="co"># re-set current time</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>td <span class="ot">&lt;-</span> tm_now <span class="sc">-</span> tm_911</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>td</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time difference of 7752.599 days</code></pre>
+</div>
+</div>
+<p>这里的td表示“difftime”类的R对象的duration ，它自动显示为“days”的计数。如果我们想用其他单位，可以试试。但这个R基础数据实质最高的单位只到weeks，无法到月和年。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(td)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "difftime"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">difftime</span>(tm_now, tm_911, <span class="at">units =</span> <span class="st">"weeks"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time difference of 1107.514 weeks</code></pre>
+</div>
+</div>
+<p>因此我们更推荐lubridate的数据类型，更像人话</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>tdl <span class="ot">&lt;-</span> <span class="fu">as.duration</span>(tm_now <span class="sc">-</span> tm_911)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>tdl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "669824560.577024s (~21.23 years)"</code></pre>
+</div>
+</div>
+<p>大家看看输出结果，确实是秒，但备注了默认让人看起来舒服的转化后的时间单位</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(tdl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Duration"
+attr(,"package")
+[1] "lubridate"</code></pre>
+</div>
+</div>
+<p>lubridate为我们设计了很多创造duration的函数</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dmonths</span>(<span class="dv">2</span>) <span class="sc">+</span> <span class="fu">dweeks</span>(<span class="dv">3</span>) <span class="sc">-</span> <span class="fu">ddays</span>(<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "6728400s (~11.12 weeks)"</code></pre>
+</div>
+</div>
+<p>由于其性质，<em>period</em>适合设置和跟踪两个事件（日期时间）之间的“时钟时间”（或者日历）变化。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.period</span>(tm_now <span class="sc">-</span> tm_911)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "7752d 14H 22M 40.5770239830017S"</code></pre>
+</div>
+</div>
+<p>我们看到period的显示结果与duration完全不同。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">&lt;-</span> <span class="fu">ymd_hms</span>(<span class="st">"2020-03-29 00:00:00"</span>, <span class="at">tz =</span> <span class="st">"Europe/London"</span>)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>t1 <span class="sc">+</span> <span class="fu">years</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2021-03-29 BST"</code></pre>
+</div>
+</div>
+<p>虽然2020年时闰年366天，但加了一年以后，日期仍然没变。我们可以再试试其他的方式，来验证我们的猜想。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>start <span class="ot">&lt;-</span> <span class="fu">mdy_hm</span>(<span class="st">"3-11-2017 5:21"</span>, <span class="at">tz =</span> <span class="st">"US/Eastern"</span>)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>end <span class="ot">&lt;-</span> <span class="fu">mdy_hm</span>(<span class="st">"3-12-2017 5:21"</span>, <span class="at">tz =</span> <span class="st">"US/Eastern"</span>)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>time.interval <span class="ot">&lt;-</span> start <span class="sc">%--%</span> end</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>time.interval</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2017-03-11 05:21:00 EST--2017-03-12 05:21:00 EDT</code></pre>
+</div>
+</div>
+<p>我们建立了一个interval，然后将其强行转化为period</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>time.period <span class="ot">&lt;-</span> <span class="fu">as.period</span>(time.interval)</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>time.period</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "1d 0H 0M 0S"</code></pre>
+</div>
+</div>
+<p>其结果时1d，虽然这两个时间相差23h，不满24h，但在period看来，这是两个不同的日期了，差了1天。</p>
+</section>
+<section id="字符数据" class="level3" data-number="5.4.2">
+<h3 data-number="5.4.2" class="anchored" data-anchor-id="字符数据"><span class="header-section-number">5.4.2</span> 字符数据</h3>
+</section>
+<section id="因子数据" class="level3" data-number="5.4.3">
+<h3 data-number="5.4.3" class="anchored" data-anchor-id="因子数据"><span class="header-section-number">5.4.3</span> 因子数据</h3>
 
 
 </section>

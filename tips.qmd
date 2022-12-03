@@ -1,6 +1,6 @@
 # Tips {.unnumbered}
 
-## 管道操作%>%
+## 管道操作%>% {#pipline}
 
 为什么R要这样写代码？`%>%`（pip operator）到底什么意思？
 参考[R语言高效的管道操作magrittr | 粉丝日志 (fens.me)](http://blog.fens.me/r-magrittr/)

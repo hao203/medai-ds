@@ -273,3 +273,255 @@ heartrate2 <- read.csv("dataset/heartrate2.csv") %>%
 heartrate2
 ```
 
+## 数据归一
+
+### 日期数据
+
+R日期可以保存为Date类型， 一般用整数保存，默认数值为从1970-1-1经过的天数。
+
+R中用一种叫做POSIXct和POSIXlt的特殊数据类型保存日期和时间， 可以仅包含日期部分，也可以同时有日期和时间。 
+基础的R包已包含了部分日期和时间操作功能。用as.Date()、as.POSIXct()等函数生成日期型和日期时间型。
+
+```{r}
+as.Date("1970-01-01")
+as.numeric(as.Date("1970-01-01"))
+as.Date(1255, origin = "1900-01-01")
+```
+
+注意，平时我们在读取数据后，日期和时间默认都是文本类型，可以看看我们前面的stroke数据。
+
+```{r}
+glimpse(stroke) # doa和dod的数据类型都是<chr>文本。
+```
+
+我们来转换一下，这时候我们可以用到一个专门处理日期和时间的包*lubridate*。
+
+```{r}
+library(lubridate)
+stroke <- stroke %>% 
+  mutate(doa = as_date(doa), dod = dmy(dod)) %>% # as_date()函数必须对应年/月/日格式
+  glimpse()
+```
+
+在年号只有两位数字时，默认对应到1969-2068范围。
+如，
+
+```{r}
+as_date("70-01-01") #
+```
+
+对于日期数据很不规整的，一团糟的，我们还可以用parsedate这个包的`parse_date`函数来进行归一化。
+
+```{r}
+parsedate::parse_date(c("03 January 2018",
+                        "07/03/1982",
+                        "08/20/85"))
+```
+
+
+其他还有很多函数，我就不再一一介绍了，更多的用法，可以访问
+
+[R日期时间](https://www.math.pku.edu.cn/teachers/lidf/docs/Rbook/html/_Rbook/prog-type-date.html)或官方文档[Make Dealing with Dates a Little Easier • lubridate](https://lubridate.tidyverse.org/index.html)。
+
+我们为什么对日期规范要求严格，只有这样才能实现日期或时间之间的运算。
+
+lubridate还有一些对时间段类型数据进行规整的方法和数据类型。
+
+- durations are time spans in exact numbers of seconds
+- periods are time spans in human units (e.g., days, months, years)
+- intervals are time spans with a given start and end point in time
+
+具体来说*duration*数据和*interval*数据都是精确到秒的，都是两个具体时间之间以秒来计算的时间段。不同的是*interval*必须有起止时间。period这个时间段更像人话，因为用秒去计算的话，人读起来太难受，但有个问题，period有时候并不是固定的，比如每个月天数不一样，如果说一月一次为周期，那肯定间隔时间不恒定。
+
+下面我们以一个例子来理解这三个数据类型。案例来源[time-lubridate](https://bookdown.org/hneth/ds4psy/10-3-time-lubridate.html)
+
+#### duration
+
+美东时间2001年9月11日，星期二，上午08:46，“基地”组织五名劫机者劫持一架美国航空公司的飞机撞向了纽约市世贸中心的北面。这就是著名的911事件。
+
+我们讨论的第一个问题是，该时间离现在到底有多久了？
+
+```{r}
+tm_911 <- ymd_hm("2001 September 11, 8:46", tz = "US/Eastern")
+tm_now <- now()  # re-set current time
+td <- tm_now - tm_911
+td
+```
+这里的td表示“difftime”类的R对象的duration ，它自动显示为“days”的计数。如果我们想用其他单位，可以试试。但这个R基础数据实质最高的单位只到weeks，无法到月和年。
+
+```{r}
+class(td)
+difftime(tm_now, tm_911, units = "weeks")
+```
+
+因此我们更推荐lubridate的数据类型，更像人话
+
+```{r}
+tdl <- as.duration(tm_now - tm_911)
+tdl
+```
+
+大家看看输出结果，确实是秒，但备注了默认让人看起来舒服的转化后的时间单位
+
+```{r}
+class(tdl)
+```
+
+lubridate为我们设计了很多创造duration的函数
+
+```{r}
+dmonths(2) + dweeks(3) - ddays(4)
+```
+
+#### period
+
+*period*适合设置和跟踪两个事件（日期时间）之间的“时钟时间”（或者日历）变化。
+
+```{r}
+as.period(tm_now - tm_911)
+```
+
+我们看到period的显示结果与duration完全不同。
+
+```{r}
+t1 <- ymd_hms("2020-03-29 00:00:00", tz = "Asia/Shanghai")
+t1 + years(1)
+```
+
+虽然2020年时闰年366天，但加了一年以后，日期仍然没变。我们可以再试试其他的方式，来验证我们的猜想。
+
+```{r}
+start <- mdy_hm("3-11-2017 5:21", tz = "US/Eastern")
+end <- mdy_hm("3-12-2017 5:21", tz = "US/Eastern")
+time.interval <- start %--% end
+time.interval
+```
+
+我们建立了一个interval，然后将其强行转化为period
+
+```{r}
+time.period <- as.period(time.interval)
+time.period
+```
+
+其结果时1d，虽然这两个时间相差23h，不满24h，但在period看来，这是两个不同的日期了，差了1天。
+
+#### interval
+
+刚刚，我们已经稍微介绍了interval的情况。
+
+可以有两种定义方法
+
+- 方法1：定义起止的具体实践，上面已经用了
+
+```{r}
+start_end <- tm_911 %--% tm_now
+start_end
+```
+
+- 方法2：只定义一个起点，然后联合时间段（time difference, duration, or period）确定终点。
+
+```{r}
+# (a) based on durations:
+next_6m_d <- tm_now %--% (tm_now + dmonths(6))
+last_6m_d <- (tm_now - dmonths(6)) %--% tm_now
+# (b) based on periods:
+next_6m_p <- tm_now %--% (tm_now + months(6))
+
+```
+
+我们看看二者有什么不同
+
+```{r}
+next_6m_p
+next_6m_d
+```
+
+#### 时间除法
+
+interval可以被duration or period除，而测算的。
+
+```{r}
+next_6m_p / years(1)
+next_6m_p / months(1)
+next_6m_d / dmonths(1)
+```
+
+回到我们最开始的问题。911事件离现在到底有多久了？
+
+```{r}
+# (1) from a duration:
+t_dur <- as.duration(tm_now - tm_911)
+round(t_dur / dyears(1), 1)
+round(t_dur / dmonths(1), 1)
+
+
+# (2) from a period:
+t_per <- as.period(tm_now - tm_911)
+round(t_per / years(1), 1)
+round(t_per / months(1), 1)
+
+
+# (3) from an interval:
+t_int <- tm_911 %--% tm_now  
+t_int %/% years(1)
+t_int %/% months(1)
+
+```
+
+:::{.callout-note}
+
+如何选择合适的时间段，我们可以参考[r4ds Dates and times](https://r4ds.had.co.nz/dates-and-times.html)。当我们主要关注的是以秒为单位的流逝时间时，我们使用duration。当时间跨度以人为习惯的单位衡量时，period通常提供最佳解决方案。如果我们需要测量受日历时间限制的时间段，我们可以使用interval，或者组合几个时间段组合。
+
+:::
+
+### 字符数据vs.factor
+
+前面讲数据结构的时候，我们提过因子factor是R语言特殊的数据类型，专门用于分类变量, 如性别、省份、职业。 有序因子代表有序量度，如打分结果，疾病严重程度等。它其实有四个属性
+
+- levels: It is a set of distinct values which are given to the input vector x.
+- labels: It is a character vector corresponding to the number of labels.
+- exclude: This will mention all the values you want to exclude.
+- Ordered: This logical attribute decides whether the levels are ordered.
+- nmax: It will decide the upper limit for the maximum number of levels.
+
+```{r}
+x <- c("男", "女", "男同", "男",  "女","男同","女同","双性恋")
+class(x)
+```
+
+当我们建立这样的字符数据的时候，和其他编程语言相同，我们还需要将其转化为factor，R语言基础包有这个方法。
+
+```{r}
+x_f <- factor(x,exclude = "双性恋", ordered = FALSE, nmax = 4)
+x_f
+```
+
+我们重新把Levels 调整一下
+
+```{r}
+levels(x_f) <- c("男", "男同","女", "女同" )
+x_f
+```
+
+我们还可以用前面的stroke数据集操练一下。首先把status数据转换为factor
+
+```{r}
+stroke_fac <- stroke %>% 
+  mutate(status = factor(status))
+str(stroke_fac$status) 
+```
+
+我们还可重新改一下levels，我们用的到的是forcats包的`fct_relevel`方法
+
+```{r}
+stroke_fac <- stroke %>% 
+  mutate(status = fct_relevel(status, "dead", "alive"))
+str(stroke_fac$status) 
+```
+
+为什么我们要调整一下levels呢？举个例子，下面的病人情况，如果你不改，默认alive在dead上面，可我想让这个表格dead在计算的时候出现在上面，我怎么办呢，只要按上面的把level顺序改了即可。
+
+![病人情况](image/05/levels.png)
+
+

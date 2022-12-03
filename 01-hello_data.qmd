@@ -40,6 +40,8 @@ head(esoph,8) %>%
 
 :::{.callout-tip}
 我们后面还会详细讲解Rectangular Data，尤其是tidy data作为一种规范的dataframe，请稍安勿躁。
+
+关于 %>% 这个符号的意义详见[pipline](tips.qmd#pipline)章节内容
 :::
 
 2. 纯粹文本Plain text
